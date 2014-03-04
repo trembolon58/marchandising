@@ -2,25 +2,18 @@ package ru.obsession.merchandising.main;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import ru.obsession.merchandising.R;
-import ru.obsession.merchandising.ShopsFragment;
+import ru.obsession.merchandising.shops.ShopsFragment;
 import ru.obsession.merchandising.login.AutorizationFragment;
 import ru.obsession.merchandising.login.GenericAccountService;
 import ru.obsession.merchandising.login.SyncUtils;
