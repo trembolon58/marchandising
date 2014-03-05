@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="num_selected">
+        <item quantity="one">"%d" выбран</item>
+        <item quantity="other">"%d выбрано"</item>
+    </plurals>
+    <plurals name="num_for_deleting">
+        <item quantity="one">"Вы действительно хотите удалить данный элемент?</item>
+        <item quantity="few">"Вы действительно хотите удалить %d" элемента?</item>
+        <item quantity="many">"Вы действительно хотите удалить %d" элементов?"</item>
+        <item quantity="other">Вы действительно хотите удалить %d" элементов?"</item>
+    </plurals>
+</resources>

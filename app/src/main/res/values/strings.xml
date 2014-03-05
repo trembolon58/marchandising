@@ -16,5 +16,19 @@
     <string name="logout">Выйти</string>
     <string name="input_data">Введите данные</string>
     <string name="shops">Магазины</string>
+    <string name="refresh">Обновить</string>
+    <string name="post">Отправить отчет</string>
+    <string name="delete">Удалить</string>
+    <string name="make_photo">Сфотографировать</string>
+    <string name="report">Отчет</string>
+    <string name="error_flash">Проблемы с флеш накопителем</string>
+    <string name="unselectAll">Снять все</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">Ок</string>
+    <string name="confirmation">Подтверждение</string>
+    <string name="nothing_selected">Ничего не выбрано</string>
+    <string name="title_activity_image_detail">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

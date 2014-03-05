@@ -3,6 +3,7 @@ package ru.obsession.merchandising.main;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
 import ru.obsession.merchandising.R;
+import ru.obsession.merchandising.report.ReportFragment;
 import ru.obsession.merchandising.shops.ShopsFragment;
 import ru.obsession.merchandising.login.AutorizationFragment;
 import ru.obsession.merchandising.login.GenericAccountService;
@@ -21,11 +23,12 @@ import ru.obsession.merchandising.login.SyncUtils;
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
+    public static final String REPORT_FRAGMENT = "report_fragment";
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-
+    public static String USER_ID = "user_id";
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -58,6 +61,10 @@ public class MainActivity extends ActionBarActivity
             case 0:
                 fragment = new ShopsFragment();
                 fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+                return;
+            case 1:
+                fragment = new ReportFragment();
+                fragmentManager.beginTransaction().replace(R.id.container, fragment, REPORT_FRAGMENT).commit();
                 return;
         }
 
@@ -101,10 +108,28 @@ public class MainActivity extends ActionBarActivity
                 for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
                     fragmentManager.popBackStack();
                 }
+                SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor ed = preferences.edit();
+                ed.putInt(USER_ID, -1);
                 Fragment fragment = new AutorizationFragment();
                 fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean drawerOpen = mNavigationDrawerFragment.isDrawerOpen();
+        hideMenuItems(menu, !drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void hideMenuItems(Menu menu, boolean visible) {
+        for (int i = 0; i < menu.size(); i++) {
+
+            menu.getItem(i).setVisible(visible);
+
+        }
     }
 }
