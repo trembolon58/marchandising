@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="@dimen/image_height"
+                android:padding="4dp"
+                android:layout_height="@dimen/image_height">
+    <ImageView
+            android:layout_width="@dimen/image_height"
+            android:layout_height="@dimen/image_height"
+            android:id="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            />
+    <FrameLayout
+            android:layout_width="@dimen/image_height"
+            android:layout_height="@dimen/image_height"
+            android:id="@+id/frameLayout">
+    </FrameLayout>
+</RelativeLayout>

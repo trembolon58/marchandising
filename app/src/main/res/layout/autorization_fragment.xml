@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
+        android:text="123"
         android:id="@+id/editLogin"
         android:layout_below="@+id/textView"
         android:layout_alignLeft="@+id/editPassword" />
@@ -19,6 +20,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
+        android:text="123"
         android:id="@+id/editPassword"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true" />
@@ -35,7 +37,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/password"
+        android:text="@string/login"
         android:id="@+id/textView"
         android:padding="@dimen/dp4"
         android:layout_alignParentTop="true"
@@ -44,7 +46,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
+        android:text="@string/password"
         android:padding="@dimen/dp4"
         android:id="@+id/textView2"
         android:layout_below="@+id/editLogin"

@@ -1,5 +1,6 @@
 package ru.obsession.merchandising.login;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,8 +16,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import ru.obsession.merchandising.R;
+import ru.obsession.merchandising.main.MainActivity;
 import ru.obsession.merchandising.main.NavigationDrawerFragment;
+import ru.obsession.merchandising.server.ServerApi;
 
 public class AutorizationFragment extends Fragment {
 
@@ -52,7 +58,25 @@ public class AutorizationFragment extends Fragment {
 
     private void login() {
         if (checkValues()) {
-            startProfile();
+            ServerApi.getInstance(getActivity()).singUp(name,password, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String s) {
+                    try{
+                        SharedPreferences preferences = getActivity().getPreferences(getActivity().MODE_PRIVATE);
+                        SharedPreferences.Editor ed = preferences.edit();
+                        ed.putInt(MainActivity.USER_ID,Integer.valueOf(s));
+                        ed.commit();
+                    startProfile();
+                    } catch (Exception e){
+                        Toast.makeText(getActivity(),s,Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Toast.makeText(getActivity(),volleyError.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                        }
+                    });
         }
     }
 
