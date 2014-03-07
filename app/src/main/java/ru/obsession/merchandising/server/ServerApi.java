@@ -54,6 +54,54 @@ public class ServerApi {
         queue.add(getRequest);
     }
 
+    public void getShops(final int id, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "get_shops");
+                mapObject.put("user_id", String.valueOf(id));
+                mapObject.put("hash", md5("get_shops" + String.valueOf(id)));
+                return mapObject;
+            }
+        };
+        queue.add(getRequest);
+    }
+
+    public void getClients(final int id, final int shopId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "get_clients");
+                mapObject.put("user_id", String.valueOf(id));
+                mapObject.put("shop_id", String.valueOf(shopId));
+                mapObject.put("hash", md5("get_clients" + String.valueOf(id) + String.valueOf(shopId)));
+                return mapObject;
+            }
+        };
+        queue.add(getRequest);
+    }
+
+    public void getWorks(final int id, final int shopId, final int clientId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "get_works");
+                mapObject.put("user_id", String.valueOf(id));
+                mapObject.put("shop_id", String.valueOf(shopId));
+                mapObject.put("client_id", String.valueOf(clientId));
+                mapObject.put("hash", md5("get_works" + String.valueOf(id) + String.valueOf(shopId) + String.valueOf(clientId)));
+                return mapObject;
+            }
+        };
+        queue.add(getRequest);
+    }
+
     public static String md5(String s) {
         s = MD5_KEY + s;
         try {

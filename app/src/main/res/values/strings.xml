@@ -30,5 +30,7 @@
     <string name="title_activity_image_detail">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="descroption">Пояснение</string>
+    <string name="get_root">Получить разрешение работать не по графику</string>
 
 </resources>
