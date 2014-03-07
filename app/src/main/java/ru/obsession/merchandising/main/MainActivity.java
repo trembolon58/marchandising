@@ -4,21 +4,21 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.widget.DrawerLayout;
 
 import ru.obsession.merchandising.R;
-import ru.obsession.merchandising.report.ReportFragment;
-import ru.obsession.merchandising.shops.ShopsFragment;
+import ru.obsession.merchandising.customized_schedule.CustomizedFragment;
 import ru.obsession.merchandising.login.AutorizationFragment;
 import ru.obsession.merchandising.login.GenericAccountService;
 import ru.obsession.merchandising.login.SyncUtils;
+import ru.obsession.merchandising.shops.ShopsFragment;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -63,7 +63,7 @@ public class MainActivity extends ActionBarActivity
                 fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
                 return;
             case 1:
-                fragment = new ReportFragment();
+                fragment = new CustomizedFragment();
                 fragmentManager.beginTransaction().replace(R.id.container, fragment, REPORT_FRAGMENT).commit();
                 return;
         }
@@ -98,21 +98,23 @@ public class MainActivity extends ActionBarActivity
         restoreActionBar();
         return super.onCreateOptionsMenu(menu);
     }
-
+ public void logOut(){
+     SyncUtils.DeleteSyncAccount(this);
+     FragmentManager fragmentManager = getSupportFragmentManager();
+     for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+         fragmentManager.popBackStack();
+     }
+     SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+     SharedPreferences.Editor ed = preferences.edit();
+     ed.putInt(USER_ID, -1);
+     Fragment fragment = new AutorizationFragment();
+     fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+ }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                SyncUtils.DeleteSyncAccount(this);
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
-                    fragmentManager.popBackStack();
-                }
-                SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor ed = preferences.edit();
-                ed.putInt(USER_ID, -1);
-                Fragment fragment = new AutorizationFragment();
-                fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+                logOut();
                 return true;
         }
         return super.onOptionsItemSelected(item);

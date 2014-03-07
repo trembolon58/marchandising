@@ -1,24 +1,17 @@
 package ru.obsession.merchandising.report;
 
-import ru.obsession.merchandising.R;
-import ru.obsession.merchandising.report.util.SystemUiHider;
-
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Display;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import ru.obsession.merchandising.R;
 
 public class ImageDetailActivity extends ActionBarActivity {
 

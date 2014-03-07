@@ -1,18 +1,17 @@
 package ru.obsession.merchandising.main;
 
-import android.content.Context;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;;
 import android.app.Activity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,15 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import ru.obsession.merchandising.R;
-import ru.obsession.merchandising.login.AutorizationFragment;
-import ru.obsession.merchandising.login.SyncUtils;
+
+;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -122,7 +119,7 @@ public class NavigationDrawerFragment extends Fragment {
         });
         ArrayList<DrawerItem> items = new ArrayList<DrawerItem>();
         items.add(new DrawerItem(R.string.shops, R.drawable.ic_launcher));
-        items.add(new DrawerItem(R.string.report, R.drawable.ic_launcher));
+        items.add(new DrawerItem(R.string.get_root, R.drawable.ic_launcher));
         mDrawerListView.setAdapter(new DrawerAdapter(getActionBar().getThemedContext(), items));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;

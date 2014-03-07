@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ru.obsession.merchandising.R;
+import ru.obsession.merchandising.main.MainActivity;
+import ru.obsession.merchandising.shops.ShopsFragment;
+import ru.obsession.merchandising.works.WorkFragment;
 
 public class ReportFragment extends Fragment {
 
@@ -45,6 +48,9 @@ public class ReportFragment extends Fragment {
     private boolean createdCab;
     private boolean rotait;
     private GridView gridView;
+    private int userId;
+    private int shopId;
+    private int workId;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -160,6 +166,10 @@ public class ReportFragment extends Fragment {
         setHasOptionsMenu(true);
         View root = inflater.inflate(R.layout.report_fragment,container,false);
         gridView = (GridView) root.findViewById(R.id.gridView);
+        Bundle bundle = getArguments();
+        userId = bundle.getInt(MainActivity.USER_ID);
+        shopId = bundle.getInt(ShopsFragment.SHOP_ID);
+        workId = bundle.getInt(WorkFragment.WORK_ID);
         if (savedInstanceState != null) {
             numSelected = savedInstanceState.getInt(NUM_SELECTED);
             images = savedInstanceState.getParcelableArrayList(ADAPTER);
