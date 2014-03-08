@@ -28,7 +28,7 @@ public class DeleteDialog extends DialogFragment {
         }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ReportFragment fragment = (ReportFragment) getFragmentManager().findFragmentByTag(MainActivity.REPORT_FRAGMENT);
+                PhotoReportFragment fragment = (PhotoReportFragment) getFragmentManager().findFragmentByTag(MainActivity.REPORT_FRAGMENT);
                 fragment.delSelected();
             }
         }).setTitle(R.string.confirmation);

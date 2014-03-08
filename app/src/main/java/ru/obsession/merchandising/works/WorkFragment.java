@@ -1,7 +1,5 @@
 package ru.obsession.merchandising.works;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -28,10 +26,8 @@ import java.util.ArrayList;
 import ru.obsession.merchandising.R;
 import ru.obsession.merchandising.clients.ClientFragment;
 import ru.obsession.merchandising.main.MainActivity;
-import ru.obsession.merchandising.report.ReportFragment;
+import ru.obsession.merchandising.report.PhotoReportFragment;
 import ru.obsession.merchandising.server.ServerApi;
-import ru.obsession.merchandising.shops.Shop;
-import ru.obsession.merchandising.shops.ShopsAdapter;
 import ru.obsession.merchandising.shops.ShopsFragment;
 
 public class WorkFragment extends Fragment {
@@ -41,7 +37,7 @@ public class WorkFragment extends Fragment {
     public static final String WORK_ID = "work_id";
     private ListView listView;
     private ProgressBar progressBar;
-    private ArrayList<Shop> works;
+    private ArrayList<Work> works;
     private int userId;
     private int shopId;
     private int clientId;
@@ -49,18 +45,16 @@ public class WorkFragment extends Fragment {
         @Override
         public void onResponse(String s) {
             try {
-                ArrayList<Shop> works = new ArrayList<Shop>();
+                works = new ArrayList<Work>();
                 progressBar.setVisibility(View.GONE);
                 JSONArray jsonArray = new JSONArray(s);
                 for (int i = 0; i < jsonArray.length(); ++i) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    int id = jsonObject.getInt("id");
                     String name = jsonObject.getString("name");
                     String desc = jsonObject.getString("desc");
-                    boolean done = jsonObject.getInt("ready") == 1;
-                    works.add(new Shop(id, name, desc, done));
+                    works.add(new Work(name, desc));
                 }
-                listView.setAdapter(new ShopsAdapter(getActivity(), works));
+                listView.setAdapter(new WorksAdapter(getActivity(), works));
             } catch (JSONException e) {
                 Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
@@ -82,7 +76,7 @@ public class WorkFragment extends Fragment {
     private void retainInstance(Bundle savedState) {
         userId = savedState.getInt(USER_ID, -1);
         works = savedState.getParcelableArrayList(WORK_TAG);
-        listView.setAdapter(new ShopsAdapter(getActivity(), works));
+        listView.setAdapter(new WorksAdapter(getActivity(), works));
     }
 
     @Override
@@ -101,12 +95,14 @@ public class WorkFragment extends Fragment {
             retainInstance(savedInstanceState);
         }
         progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
+        listView.setClickable(false);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment fragment = new ReportFragment();
-                Bundle bundle = getArguments();
-                bundle.putInt(WORK_ID, works.get(position).id);
+                Fragment fragment = new DescriptionFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(DescriptionFragment.DESCRIPTION,works.get(position).description);
+                bundle.putString(DescriptionFragment.NAME,works.get(position).name);
                 fragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
@@ -124,7 +120,7 @@ public class WorkFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.refresh, menu);
+        inflater.inflate(R.menu.work_menu, menu);
     }
 
     @Override
@@ -135,6 +131,12 @@ public class WorkFragment extends Fragment {
                 listView.setAdapter(null);
                 ServerApi serverApi = ServerApi.getInstance(getActivity());
                 serverApi.getWorks(userId, shopId, clientId, listener, errorListener);
+                return true;
+            case R.id.menu_photoreport:
+                Fragment fragment = new PhotoReportFragment();
+                fragment.setArguments(getArguments());
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

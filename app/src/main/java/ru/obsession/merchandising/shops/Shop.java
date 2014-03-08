@@ -4,10 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Shop implements Parcelable{
-    public int id;
-    public String name;
-    public String address;
-    public boolean done;
+    int id;
+    String name;
+    String address;
+    boolean done;
 
     public Shop(int id, String name, String adress, boolean done) {
         this.id = id;

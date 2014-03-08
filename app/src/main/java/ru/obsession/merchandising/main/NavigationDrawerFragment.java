@@ -119,7 +119,7 @@ public class NavigationDrawerFragment extends Fragment {
         });
         ArrayList<DrawerItem> items = new ArrayList<DrawerItem>();
         items.add(new DrawerItem(R.string.shops, R.drawable.ic_launcher));
-        items.add(new DrawerItem(R.string.get_root, R.drawable.ic_launcher));
+        items.add(new DrawerItem(R.string.customized_schedule, R.drawable.ic_launcher));
         mDrawerListView.setAdapter(new DrawerAdapter(getActionBar().getThemedContext(), items));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
