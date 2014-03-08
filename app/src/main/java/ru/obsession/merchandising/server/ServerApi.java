@@ -68,6 +68,19 @@ public class ServerApi {
         };
         queue.add(getRequest);
     }
+    public void getShopsNet(Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "get_shops");
+                mapObject.put("hash", md5("get_shops"));
+                return mapObject;
+            }
+        };
+        queue.add(getRequest);
+    }
 
     public void getClients(final int id, final int shopId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,

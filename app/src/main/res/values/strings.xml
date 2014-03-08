@@ -32,5 +32,8 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="descroption">Пояснение</string>
     <string name="get_root">Получить разрешение работать не по графику</string>
+    <string name="customized_schedule">Работа не по графику</string>
+    <string name="photo_report">Фотоотчет</string>
+    <string name="order">Заказ</string>
 
 </resources>

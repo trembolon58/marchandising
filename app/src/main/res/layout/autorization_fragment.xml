@@ -2,53 +2,53 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:gravity="center"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center">
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:text="123"
         android:id="@+id/editLogin"
-        android:layout_below="@+id/textView"
-        android:layout_alignLeft="@+id/editPassword" />
-
-    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
+        android:layout_alignLeft="@+id/editPassword"
+        android:layout_below="@+id/textView"
         android:ems="10"
-        android:text="123"
+        android:inputType="textPersonName"
+        android:text="123" />
+
+    <EditText
         android:id="@+id/editPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:text="123" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/singin"
         android:id="@+id/buttonLogin"
-        android:layout_below="@+id/editPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/editPassword"
-        android:layout_alignRight="@+id/editPassword" />
+        android:layout_alignRight="@+id/editPassword"
+        android:layout_below="@+id/editPassword"
+        android:text="@string/singin" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login"
         android:id="@+id/textView"
-        android:padding="@dimen/dp4"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/editLogin" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/password"
+        android:layout_alignLeft="@+id/editLogin"
+        android:layout_alignParentTop="true"
         android:padding="@dimen/dp4"
+        android:text="@string/login" />
+
+    <TextView
         android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editPassword"
         android:layout_below="@+id/editLogin"
-        android:layout_alignLeft="@+id/editPassword" />
+        android:padding="@dimen/dp4"
+        android:text="@string/password" />
 </RelativeLayout>

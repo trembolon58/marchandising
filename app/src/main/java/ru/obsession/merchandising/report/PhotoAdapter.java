@@ -16,7 +16,7 @@ import ru.obsession.merchandising.R;
 import java.io.File;
 import java.util.ArrayList;
 
-public class PhotoAdapter extends ArrayAdapter<ReportFragment.Image> {
+public class PhotoAdapter extends ArrayAdapter<PhotoReportFragment.Image> {
     private LayoutInflater lInflater;
     private Resources resources;
 
@@ -26,7 +26,7 @@ public class PhotoAdapter extends ArrayAdapter<ReportFragment.Image> {
 
     private boolean withChecking;
 
-    public PhotoAdapter(Context context, ArrayList<ReportFragment.Image> images, boolean withChecking) {
+    public PhotoAdapter(Context context, ArrayList<PhotoReportFragment.Image> images, boolean withChecking) {
         super(context, R.layout.image_view_checked, R.id.imageView, images);
         this.withChecking = withChecking;
         resources = context.getResources();
@@ -50,7 +50,7 @@ public class PhotoAdapter extends ArrayAdapter<ReportFragment.Image> {
         } else {
             holder = (ViewHolder) v.getTag();
         }
-        final ReportFragment.Image pathImage = getItem(position);
+        final PhotoReportFragment.Image pathImage = getItem(position);
         if (pathImage.image == null && new File(pathImage.path).exists()) {
             new AsyncTask<Bitmap, Bitmap, Bitmap>() {
                 @Override

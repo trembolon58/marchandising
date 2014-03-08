@@ -34,7 +34,7 @@ import ru.obsession.merchandising.main.MainActivity;
 import ru.obsession.merchandising.shops.ShopsFragment;
 import ru.obsession.merchandising.works.WorkFragment;
 
-public class ReportFragment extends Fragment {
+public class PhotoReportFragment extends Fragment {
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int MEDIA_TYPE_IMAGE = 1;
@@ -50,7 +50,6 @@ public class ReportFragment extends Fragment {
     private GridView gridView;
     private int userId;
     private int shopId;
-    private int workId;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -169,7 +168,6 @@ public class ReportFragment extends Fragment {
         Bundle bundle = getArguments();
         userId = bundle.getInt(MainActivity.USER_ID);
         shopId = bundle.getInt(ShopsFragment.SHOP_ID);
-        workId = bundle.getInt(WorkFragment.WORK_ID);
         if (savedInstanceState != null) {
             numSelected = savedInstanceState.getInt(NUM_SELECTED);
             images = savedInstanceState.getParcelableArrayList(ADAPTER);
