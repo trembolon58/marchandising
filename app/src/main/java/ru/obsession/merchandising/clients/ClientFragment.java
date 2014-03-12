@@ -65,6 +65,7 @@ public class ClientFragment extends Fragment {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
             try {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
