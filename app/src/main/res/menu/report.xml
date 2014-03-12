@@ -10,7 +10,7 @@
         android:icon="@drawable/camera_icon"
         android:title="@string/make_photo"
         application:showAsAction="always"/>
-    <item android:id="@+id/add_button"
+    <item android:id="@+id/upload_button"
         android:title="@string/post"
         android:icon="@drawable/done_icon"
         application:showAsAction="always"/>

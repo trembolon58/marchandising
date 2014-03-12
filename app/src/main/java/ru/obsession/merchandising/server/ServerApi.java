@@ -51,9 +51,17 @@ public class ServerApi {
                 return mapObject;
             }
         };
+        cancelAll();
         queue.add(getRequest);
     }
-
+    private void cancelAll(){
+        queue.cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                return true;
+            }
+        });
+    }
     public void getShops(final int id, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
                 responseListener, errorListener) {
@@ -66,6 +74,7 @@ public class ServerApi {
                 return mapObject;
             }
         };
+        cancelAll();
         queue.add(getRequest);
     }
     public void getShopsNet(Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
@@ -74,11 +83,12 @@ public class ServerApi {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "get_shops");
-                mapObject.put("hash", md5("get_shops"));
+                mapObject.put("type", "chain_store");
+                mapObject.put("hash", md5("chain_store"));
                 return mapObject;
             }
         };
+        cancelAll();
         queue.add(getRequest);
     }
 
@@ -95,6 +105,7 @@ public class ServerApi {
                 return mapObject;
             }
         };
+        cancelAll();
         queue.add(getRequest);
     }
 
@@ -112,6 +123,7 @@ public class ServerApi {
                 return mapObject;
             }
         };
+        cancelAll();
         queue.add(getRequest);
     }
 
