@@ -37,5 +37,8 @@
     <string name="order">Заказ</string>
     <string name="error_sending_report">Ошибка отправки отчета</string>
     <string name="sexes">Данные загружены</string>
+    <string name="supervizer_code">Код разрешения от сепервайзера</string>
+    <string name="get_code">Запросить код</string>
+    <string name="send_code">Отправить код</string>
 
 </resources>

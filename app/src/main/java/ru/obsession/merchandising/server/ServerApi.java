@@ -127,6 +127,40 @@ public class ServerApi {
         queue.add(getRequest);
     }
 
+    public void getShopsByAdress(final int id, final String chainName, final String adress, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "shop_by_address");
+                mapObject.put("user_id", String.valueOf(id));
+                mapObject.put("chain_name", chainName);
+                mapObject.put("part_address", adress);
+                mapObject.put("hash", md5("shop_by_address" + chainName + adress + String.valueOf(id)));
+                return mapObject;
+            }
+        };
+        cancelAll();
+        queue.add(getRequest);
+    }
+
+    public void getAcsess(final int id, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "request_access");
+                mapObject.put("user_id", String.valueOf(id));
+                mapObject.put("hash", md5("request_access" + String.valueOf(id)));
+                return mapObject;
+            }
+        };
+        cancelAll();
+        queue.add(getRequest);
+    }
+
     public static String md5(String s) {
         s = MD5_KEY + s;
         try {
