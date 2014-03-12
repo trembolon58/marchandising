@@ -21,8 +21,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -31,8 +36,8 @@ import java.util.Date;
 
 import ru.obsession.merchandising.R;
 import ru.obsession.merchandising.main.MainActivity;
-import ru.obsession.merchandising.shops.ShopsFragment;
-import ru.obsession.merchandising.works.WorkFragment;
+import ru.obsession.merchandising.server.MultiformRequest;
+import ru.obsession.merchandising.server.ServerApi;
 
 public class PhotoReportFragment extends Fragment {
 
@@ -49,7 +54,18 @@ public class PhotoReportFragment extends Fragment {
     private boolean rotait;
     private GridView gridView;
     private int userId;
-    private int shopId;
+    private Response.Listener<String> listener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String s) {
+         Toast.makeText(getActivity(),R.string.sexes,Toast.LENGTH_LONG).show();
+        }
+    };
+    private Response.ErrorListener errorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError volleyError) {
+            Toast.makeText(getActivity(),volleyError.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+        }
+    };
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -167,7 +183,6 @@ public class PhotoReportFragment extends Fragment {
         gridView = (GridView) root.findViewById(R.id.gridView);
         Bundle bundle = getArguments();
         userId = bundle.getInt(MainActivity.USER_ID);
-        shopId = bundle.getInt(ShopsFragment.SHOP_ID);
         if (savedInstanceState != null) {
             numSelected = savedInstanceState.getInt(NUM_SELECTED);
             images = savedInstanceState.getParcelableArrayList(ADAPTER);
@@ -212,8 +227,27 @@ public class PhotoReportFragment extends Fragment {
                         .startSupportActionMode(mActionModeCallback);
                 longClick = false;
                 return true;
+            case R.id.upload_button:
+                uploadReport();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void uploadReport() {
+        try {
+            EditText editText = (EditText) getView().findViewById(R.id.editText);
+            String message = editText.getText().toString();
+            ArrayList<String> imagePaths = new ArrayList<String>();
+            for (Image image : images) {
+                imagePaths.add(image.path);
+            }
+            Request request = new MultiformRequest(userId, listener, errorListener, imagePaths, message);
+            ServerApi.getInstance(getActivity()).getQueue().add(request);
+        } catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(getActivity(),R.string.error_sending_report,Toast.LENGTH_LONG).show();
         }
     }
 

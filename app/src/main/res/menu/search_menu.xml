@@ -4,5 +4,6 @@
     xmlns:application="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/search_button"
         android:icon="@drawable/abc_ic_search"
+        application:actionViewClass="android.support.v7.widget.SearchView"
         application:showAsAction="always"/>
 </menu>

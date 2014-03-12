@@ -35,5 +35,7 @@
     <string name="customized_schedule">Работа не по графику</string>
     <string name="photo_report">Фотоотчет</string>
     <string name="order">Заказ</string>
+    <string name="error_sending_report">Ошибка отправки отчета</string>
+    <string name="sexes">Данные загружены</string>
 
 </resources>

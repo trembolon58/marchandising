@@ -2,7 +2,6 @@ package ru.obsession.merchandising.server;
 
 import com.android.volley.*;
 import com.android.volley.toolbox.HttpHeaderParser;
-
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -11,65 +10,45 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
-/**
- * Класс, создающий стандартную <multipart/form-data> с изображенями
- */
+
 public class MultiformRequest extends Request<String> {
     private MultipartEntity entity = new MultipartEntity();
     private final Response.Listener<String> mListener;
-    private final File photo;
+    private final ArrayList<File> photos;
 
-    /**
-     * @param url адрес, по которому отправляются фотографии
-     */
-    public MultiformRequest(String url, int tipe, String description, int id, Response.ErrorListener errorListener, Response.Listener<String> listener,
-                            String photo) {
-        super(Method.POST, url, errorListener);
-        this.photo = new File(photo);
+
+    public MultiformRequest(int clientId, Response.Listener<String> listener, Response.ErrorListener errorListener,
+                            ArrayList<String> photos,String text) {
+        super(Method.POST, ServerApi.LOGIN_URL, errorListener);
+        this.photos = new ArrayList<File>();
         mListener = listener;
         try {
-            String sId = String.valueOf(id);
-            String sTipe = String.valueOf(tipe);
-            entity.addPart("type", new StringBody("upload"));
-            entity.addPart("category", new StringBody(sTipe));
-            entity.addPart("user_id", new StringBody(sId));
-            entity.addPart("title", new StringBody(description));
-            String hash = ServerApi.md5("upload" + sTipe + sId + description);
-            entity.addPart("hash", new StringBody(hash));
-        } catch (UnsupportedEncodingException e) {
+            String sId = String.valueOf(clientId);
+            entity.addPart("type", new StringBody("client_report"));
+            entity.addPart("text", new StringBody(text));
+            entity.addPart("client_id", new StringBody(sId));
+            String md5 = ServerApi.md5("client_report" + sId);
+            entity.addPart("hash", new StringBody(md5));
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        buildMultipartEntity();
-    }
-
-    public MultiformRequest(String url, int id, Response.ErrorListener errorListener, Response.Listener<String> listener,
-                            String photo) {
-        super(Method.POST, url, errorListener);
-        this.photo = new File(photo);
-        mListener = listener;
-        try {
-            String sId = String.valueOf(id);
-            entity.addPart("type", new StringBody("avatar_upload"));
-            entity.addPart("user_id", new StringBody(sId));
-            String hash = ServerApi.md5("avatar_upload" + sId);
-            entity.addPart("hash", new StringBody(hash));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (photos != null && photos.size() != 0) {
+            for (String photo : photos) {
+                this.photos.add(new File(photo));
+            }
+            buildMultipartEntity();
         }
-        buildMultipartEntity();
     }
 
     /**
      * добавляет фотографии в форму
      */
     private void buildMultipartEntity() {
-        entity.addPart("data_photo", new FileBody(photo) {
-            @Override
-            public String getMimeType() {
-                return "image/jpeg";
-            }
-        });
+        for (int i = 0; i < photos.size(); i++) {
+            entity.addPart("pictures[" + i + "]", new FileBody(photos.get(i)));
+        }
     }
 
     /**
@@ -82,7 +61,7 @@ public class MultiformRequest extends Request<String> {
 
     /**
      * @return
-     * @throws com.android.volley.AuthFailureError IOException writing to ByteArrayOutputStream
+     * @throws AuthFailureError IOException writing to ByteArrayOutputStream
      */
     @Override
     public byte[] getBody() throws AuthFailureError {
@@ -98,7 +77,7 @@ public class MultiformRequest extends Request<String> {
     /**
      * @param response Response from the network
      * @return если возможно достать JSON строку из ответа- успех
-     * иначе ошибка
+     *         иначе ошибка
      */
     @Override
     protected Response<String> parseNetworkResponse(NetworkResponse response) {

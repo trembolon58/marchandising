@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -95,19 +94,7 @@ public class WorkFragment extends Fragment {
             retainInstance(savedInstanceState);
         }
         progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
-        listView.setClickable(false);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment fragment = new DescriptionFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(DescriptionFragment.DESCRIPTION,works.get(position).description);
-                bundle.putString(DescriptionFragment.NAME,works.get(position).name);
-                fragment.setArguments(bundle);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
-            }
-        });
+        listView.setSelector(android.R.color.transparent);
         return root;
     }
 

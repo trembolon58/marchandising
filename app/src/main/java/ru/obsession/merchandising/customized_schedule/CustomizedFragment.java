@@ -27,19 +27,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import ru.obsession.merchandising.R;
-import ru.obsession.merchandising.clients.ClientFragment;
 import ru.obsession.merchandising.main.MainActivity;
 import ru.obsession.merchandising.server.ServerApi;
 
+
 public class CustomizedFragment extends Fragment {
 
-    public final static String SHOPNET_ID = "shop_id";
+    public final static String SHOP_NET_NAME = "shop_id";
     private static final String SHOPS_TAG = "shops_tag";
     private static final String USER_ID = "user_id";
-    private static final String IDS_TAG = "ids_tag";
     private ListView listView;
     private ArrayList<String> shops;
-    private ArrayList<Integer> shopsIds;
     private ProgressBar progressBar;
     private int userId;
     private Response.Listener<String> listener = new Response.Listener<String>() {
@@ -47,17 +45,14 @@ public class CustomizedFragment extends Fragment {
         public void onResponse(String s) {
             try {
                 shops = new ArrayList<String>();
-                shopsIds = new ArrayList<Integer>();
                 progressBar.setVisibility(View.GONE);
                 JSONArray jsonArray = new JSONArray(s);
                 for (int i = 0; i < jsonArray.length(); ++i) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    int id = jsonObject.getInt("id");
                     String name = jsonObject.getString("name");
                     shops.add(name);
-                    shopsIds.add(id);
                 }
-                listView.setAdapter(new ArrayAdapter<String>(getActivity(),R.layout.shop_text_view, shops));
+                listView.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.shop_text_view, shops));
             } catch(JSONException e) {
                 Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
             }catch (Exception e) {
@@ -98,9 +93,9 @@ public class CustomizedFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                ClientFragment fragment = new ClientFragment();
+                SearchFragment fragment = new SearchFragment();
                 Bundle bundle = new Bundle();
-                bundle.putInt(SHOPNET_ID, shopsIds.get(position));
+                bundle.putString(SHOP_NET_NAME, shops.get(position));
                 fragment.setArguments(bundle);
                 transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
             }
@@ -110,10 +105,9 @@ public class CustomizedFragment extends Fragment {
     }
 
     private void retainInstance(Bundle savedState) {
-        userId = savedState.getInt(USER_ID,-1);
+        userId = savedState.getInt(USER_ID, -1);
         shops = savedState.getStringArrayList(SHOPS_TAG);
-        shopsIds = savedState.getIntegerArrayList(IDS_TAG);
-        listView.setAdapter(new ArrayAdapter<String>(getActivity(),R.layout.shop_text_view, shops));
+        listView.setAdapter(new ArrayAdapter<String>(getActivity(),R.layout.shop_text_view,shops));
     }
 
     @Override
@@ -135,11 +129,10 @@ public class CustomizedFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 listView.setAdapter(null);
                 ServerApi serverApi = ServerApi.getInstance(getActivity());
-                serverApi.getShopsNet(listener, errorListener);
+                serverApi.getShops(userId, listener, errorListener);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 }
-
