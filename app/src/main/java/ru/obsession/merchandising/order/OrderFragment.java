@@ -253,7 +253,12 @@ public class OrderFragment extends Fragment {
                 return;
             }
         }
-        serverApi.sendOrder(userId, shopId, createJSONArray(),orderText, done, new Response.Listener<String>() {
+        JSONArray jsonArray = createJSONArray();
+        if (jsonArray.length() == 0){
+            Toast.makeText(getActivity(),R.string.nothing_send,Toast.LENGTH_LONG).show();
+            return;
+        }
+        serverApi.sendOrder(userId, shopId, jsonArray,orderText, done, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 try {

@@ -70,4 +70,7 @@
     <string name="date_refresh">Дата обновления:</string>
     <string name="resone_vis">Причина возникновения:</string>
     <string name="response">Контактное лицо, ответственное за адаптацию:</string>
+    <string name="nothing_send">Нет данных для отправки</string>
+    <string name="done">Готово</string>
+    <string name="sexes_skip">Отчет успешно пропущен</string>
 </resources>

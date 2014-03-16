@@ -13,7 +13,7 @@
         android:layout_below="@+id/textView"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="user100" />
+        android:text="user222" />
 
     <EditText
         android:id="@+id/editPassword"
@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="pass100" />
+        android:text="pass222" />
 
     <Button
         android:id="@+id/buttonLogin"
