@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -52,8 +51,6 @@ public class PhotoReportFragment extends Fragment {
     private int numSelected = 0;
     private ActionMode mActionMode;
     private boolean longClick;
-    private EditText editIncounterTime;
-    private EditText editOutcointerTime;
     private boolean createdCab;
     private boolean rotait;
     private GridView gridView;

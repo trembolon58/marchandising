@@ -160,7 +160,12 @@ public class ReturnedFragment extends Fragment {
         ServerApi serverApi = ServerApi.getInstance(getActivity());
         int userId = getArguments().getInt(MainActivity.USER_ID);
         int shopId = getArguments().getInt(ShopsFragment.SHOP_ID);
-        serverApi.sendGroupReturn(userId, shopId, createJSONArray(), new Response.Listener<String>() {
+        JSONArray jsonArray = createJSONArray();
+        if (jsonArray.length() == 0){
+            Toast.makeText(getActivity(),R.string.nothing_send,Toast.LENGTH_LONG).show();
+            return;
+        }
+        serverApi.sendGroupReturn(userId, shopId, jsonArray, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 try {

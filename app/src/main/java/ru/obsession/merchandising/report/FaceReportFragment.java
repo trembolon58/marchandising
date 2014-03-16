@@ -228,7 +228,12 @@ public class FaceReportFragment extends Fragment {
         ServerApi serverApi = ServerApi.getInstance(getActivity());
         int userId = getArguments().getInt(MainActivity.USER_ID);
         int shopId = getArguments().getInt(ShopsFragment.SHOP_ID);
-        serverApi.sendFacesReport(userId, shopId, createJSONArray(), inTime, outTime, new Response.Listener<String>() {
+        JSONArray jsonArray = createJSONArray();
+        if (jsonArray.length() == 0){
+            Toast.makeText(getActivity(),R.string.nothing_send,Toast.LENGTH_LONG).show();
+            return;
+        }
+        serverApi.sendFacesReport(userId, shopId, jsonArray, inTime, outTime, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 try {
