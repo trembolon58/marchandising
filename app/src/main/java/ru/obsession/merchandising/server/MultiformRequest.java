@@ -19,17 +19,20 @@ public class MultiformRequest extends Request<String> {
     private final ArrayList<File> photos;
 
 
-    public MultiformRequest(int clientId, Response.Listener<String> listener, Response.ErrorListener errorListener,
-                            ArrayList<String> photos,String text) {
+    public MultiformRequest(int useerID, int shopId, int clientId, Response.Listener<String> listener, Response.ErrorListener errorListener,
+                            ArrayList<String> photos) {
         super(Method.POST, ServerApi.LOGIN_URL, errorListener);
         this.photos = new ArrayList<File>();
         mListener = listener;
         try {
-            String sId = String.valueOf(clientId);
+            String sId = String.valueOf(useerID);
+            String sSopId = String.valueOf(shopId);
+            String sClientId = String.valueOf(clientId);
             entity.addPart("type", new StringBody("client_report"));
-            entity.addPart("text", new StringBody(text));
-            entity.addPart("client_id", new StringBody(sId));
-            String md5 = ServerApi.md5("client_report" + sId);
+            entity.addPart("user_id", new StringBody(sId));
+            entity.addPart("shop_id", new StringBody(sSopId));
+            entity.addPart("client_id", new StringBody(sClientId));
+            String md5 = ServerApi.md5("client_report" + sId + sSopId + sClientId);
             entity.addPart("hash", new StringBody(md5));
         } catch (Exception e) {
             e.printStackTrace();

@@ -3,10 +3,6 @@ package ru.obsession.merchandising.login;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,8 +17,8 @@ import com.android.volley.VolleyError;
 
 import ru.obsession.merchandising.R;
 import ru.obsession.merchandising.main.MainActivity;
-import ru.obsession.merchandising.main.NavigationDrawerFragment;
 import ru.obsession.merchandising.server.ServerApi;
+import ru.obsession.merchandising.shops.ShopsFragment;
 
 public class AutorizationFragment extends Fragment {
 
@@ -39,9 +35,6 @@ public class AutorizationFragment extends Fragment {
         editName = (EditText) root.findViewById(R.id.editLogin);
         editPassword = (EditText) root.findViewById(R.id.editPassword);
         Button buttonLogin = (Button) root.findViewById(R.id.buttonLogin);
-        NavigationDrawerFragment fragment =
-                (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        fragment.disableDrawer();
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,9 +75,9 @@ public class AutorizationFragment extends Fragment {
 
     private void startProfile() {
         SyncUtils.CreateSyncAccount(getActivity(), name, password);
-        NavigationDrawerFragment fragment =
-                (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        fragment.login();
+        Fragment fragment = new ShopsFragment();
+        getFragmentManager().popBackStack();
+        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     private boolean checkValues() {
@@ -100,9 +93,5 @@ public class AutorizationFragment extends Fragment {
             editPassword.setError(getString(R.string.input_data));
         }
         return allRight;
-    }
-
-    public ActionBar getActionBar() {
-        return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 }

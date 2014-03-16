@@ -1,22 +1,10 @@
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.obsession.merchandising.main.MainActivity">
-    <FrameLayout
-        android:id="@+id/container"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingBottom="@dimen/dp4"
-        android:paddingTop="@dimen/dp4"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <fragment
-        android:id="@+id/navigation_drawer"
-        android:name="ru.obsession.merchandising.main.NavigationDrawerFragment"
-        android:layout_width="@dimen/navigation_drawer_width"
-        android:layout_height="match_parent"
-        android:layout_gravity="start" />
-
-</android.support.v4.widget.DrawerLayout>
+    android:paddingBottom="@dimen/dp4"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="@dimen/dp4"
+    tools:context="ru.obsession.merchandising.main.MainActivity" />

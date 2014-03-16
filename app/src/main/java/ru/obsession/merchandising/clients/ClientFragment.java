@@ -2,6 +2,7 @@ package ru.obsession.merchandising.clients;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,7 +25,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import ru.obsession.merchandising.R;
+import ru.obsession.merchandising.customized_schedule.GetAccessFragment;
 import ru.obsession.merchandising.main.MainActivity;
+import ru.obsession.merchandising.report.ReportFragment;
 import ru.obsession.merchandising.server.ServerApi;
 import ru.obsession.merchandising.shops.ShopsFragment;
 import ru.obsession.merchandising.works.WorkFragment;
@@ -55,7 +58,16 @@ public class ClientFragment extends Fragment {
                 }
                 listView.setAdapter(new ClientAdapter(getActivity(), clients));
             } catch(JSONException e) {
-                Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+                try{
+                    Integer.getInteger(s);
+                    FragmentManager manager = getFragmentManager();
+                    manager.popBackStack();
+                    Fragment fragment = new GetAccessFragment();
+                    fragment.setArguments(getArguments());
+                    manager.beginTransaction().replace(R.id.container, fragment).addToBackStack("tag").commit();
+                } catch (Exception ex){
+                    Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -118,11 +130,13 @@ public class ClientFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.refresh, menu);
+        inflater.inflate(R.menu.client_menu, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Fragment fragment;
+        FragmentTransaction transaction;
         switch (item.getItemId()) {
             case R.id.menu_refresh:
                 progressBar.setVisibility(View.GONE);
@@ -130,8 +144,15 @@ public class ClientFragment extends Fragment {
                 ServerApi serverApi = ServerApi.getInstance(getActivity());
                 serverApi.getClients(userId, shopId, listener, errorListener);
                 return true;
+            case R.id.menu_report:
+                fragment = new ReportFragment();
+                fragment.setArguments(getArguments());
+                transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

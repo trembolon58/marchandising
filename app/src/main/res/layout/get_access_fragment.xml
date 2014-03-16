@@ -6,39 +6,40 @@
     android:layout_gravity="center">
 
     <TextView
-        android:padding="@dimen/dp4"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/supervizer_code"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/textView" />
+        android:padding="@dimen/dp4"
+        android:text="@string/supervizer_code" />
 
     <EditText
-        android:layout_width="wrap_content"
-        android:padding="@dimen/dp4"
-        android:layout_height="wrap_content"
         android:id="@+id/editText"
-        android:layout_below="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView"
-        android:layout_alignRight="@+id/textView" />
+        android:layout_alignRight="@+id/textView"
+        android:layout_below="@+id/textView"
+        android:inputType="textPassword"
+        android:padding="@dimen/dp4" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/get_code"
         android:id="@+id/buttonGetCode"
-        android:layout_below="@+id/editText"
-        android:layout_alignLeft="@+id/editText"
-        android:layout_alignRight="@+id/editText" />
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/send_code"
-        android:id="@+id/button2"
-        android:layout_below="@+id/buttonGetCode"
+        android:layout_alignLeft="@+id/editText"
+        android:layout_alignRight="@+id/editText"
+        android:layout_below="@+id/editText"
+        android:text="@string/get_code" />
+
+    <Button
+        android:id="@+id/buttonSendCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/buttonGetCode"
-        android:layout_alignRight="@+id/buttonGetCode" />
+        android:layout_alignRight="@+id/buttonGetCode"
+        android:layout_below="@+id/buttonGetCode"
+        android:text="@string/send_code" />
 
 </RelativeLayout>
