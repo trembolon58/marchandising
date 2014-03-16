@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import ru.obsession.merchandising.R;
 import ru.obsession.merchandising.clients.ClientFragment;
 import ru.obsession.merchandising.main.MainActivity;
+import ru.obsession.merchandising.report.FaceReportFragment;
 import ru.obsession.merchandising.report.PhotoReportFragment;
 import ru.obsession.merchandising.server.ServerApi;
 import ru.obsession.merchandising.shops.ShopsFragment;
@@ -113,6 +114,8 @@ public class WorkFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Fragment fragment;
+        FragmentTransaction transaction;
         switch (item.getItemId()) {
             case R.id.menu_refresh:
                 progressBar.setVisibility(View.GONE);
@@ -121,10 +124,16 @@ public class WorkFragment extends Fragment {
                 serverApi.getWorks(userId, shopId, clientId, listener, errorListener);
                 return true;
             case R.id.menu_photoreport:
-                Fragment fragment = new PhotoReportFragment();
+                fragment = new PhotoReportFragment();
                 fragment.setArguments(getArguments());
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
+                transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.container, fragment, MainActivity.REPORT_FRAGMENT).addToBackStack("tag").commit();
+                return true;
+            case R.id.menu_report:
+                fragment = new FaceReportFragment();
+                fragment.setArguments(getArguments());
+                transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.container, fragment, MainActivity.FASE_REPORT).addToBackStack("tag").commit();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

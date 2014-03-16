@@ -35,9 +35,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ru.obsession.merchandising.R;
+import ru.obsession.merchandising.clients.ClientFragment;
 import ru.obsession.merchandising.main.MainActivity;
 import ru.obsession.merchandising.server.MultiformRequest;
 import ru.obsession.merchandising.server.ServerApi;
+import ru.obsession.merchandising.shops.ShopsFragment;
 
 public class PhotoReportFragment extends Fragment {
 
@@ -50,6 +52,8 @@ public class PhotoReportFragment extends Fragment {
     private int numSelected = 0;
     private ActionMode mActionMode;
     private boolean longClick;
+    private EditText editIncounterTime;
+    private EditText editOutcointerTime;
     private boolean createdCab;
     private boolean rotait;
     private GridView gridView;
@@ -57,13 +61,14 @@ public class PhotoReportFragment extends Fragment {
     private Response.Listener<String> listener = new Response.Listener<String>() {
         @Override
         public void onResponse(String s) {
-         Toast.makeText(getActivity(),R.string.sexes,Toast.LENGTH_LONG).show();
+            getFragmentManager().popBackStack();
+            Toast.makeText(getActivity(), R.string.sexes, Toast.LENGTH_LONG).show();
         }
     };
     private Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
-            Toast.makeText(getActivity(),volleyError.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     };
 
@@ -151,7 +156,7 @@ public class PhotoReportFragment extends Fragment {
         setAdapter();
     }
 
-    private void setAdapter(){
+    private void setAdapter() {
         PhotoAdapter gridAdapterImage = new PhotoAdapter(getActivity(), images, createdCab);
         gridView.setAdapter(gridAdapterImage);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -176,10 +181,11 @@ public class PhotoReportFragment extends Fragment {
             }
         });
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        View root = inflater.inflate(R.layout.report_fragment,container,false);
+        View root = inflater.inflate(R.layout.report_fragment, container, false);
         gridView = (GridView) root.findViewById(R.id.gridView);
         Bundle bundle = getArguments();
         userId = bundle.getInt(MainActivity.USER_ID);
@@ -192,7 +198,7 @@ public class PhotoReportFragment extends Fragment {
                 mActionMode = ((ActionBarActivity) getActivity())
                         .startSupportActionMode(mActionModeCallback);
                 longClick = false;
-                }
+            }
             setAdapter();
         } else {
             images = new ArrayList<Image>();
@@ -208,12 +214,12 @@ public class PhotoReportFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.photo_button:
                 Intent photoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 File fileImg = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-                if (fileImg == null){
-                    Toast.makeText(getActivity(),R.string.error_flash,Toast.LENGTH_LONG).show();
+                if (fileImg == null) {
+                    Toast.makeText(getActivity(), R.string.error_flash, Toast.LENGTH_LONG).show();
                     return true;
                 }
                 Uri fileUri = Uri.fromFile(fileImg);
@@ -237,17 +243,21 @@ public class PhotoReportFragment extends Fragment {
 
     private void uploadReport() {
         try {
-            EditText editText = (EditText) getView().findViewById(R.id.editText);
-            String message = editText.getText().toString();
+            if (images == null || images.size() == 0) {
+                Toast.makeText(getActivity(), R.string.have_no_photo, Toast.LENGTH_LONG).show();
+                return;
+            }
             ArrayList<String> imagePaths = new ArrayList<String>();
             for (Image image : images) {
                 imagePaths.add(image.path);
             }
-            Request request = new MultiformRequest(userId, listener, errorListener, imagePaths, message);
+            int shopId = getArguments().getInt(ShopsFragment.SHOP_ID);
+            int clientId = getArguments().getInt(ClientFragment.CLIENT_ID);
+            Request request = new MultiformRequest(userId, shopId, clientId, listener, errorListener, imagePaths);
             ServerApi.getInstance(getActivity()).getQueue().add(request);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getActivity(),R.string.error_sending_report,Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.error_sending_report, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -268,23 +278,25 @@ public class PhotoReportFragment extends Fragment {
         images.add(new Image(mediaFile.getPath()));
         return mediaFile;
     }
-public void delSelected(){
-    Image image;
-    for (int i = images.size() - 1; i >= 0; --i){
-        image = images.get(i);
-        if (image.checked){
-            try {
-              File file = new File(image.path);
-              file.delete();
-            }catch (Exception e){
-                e.printStackTrace();
+
+    public void delSelected() {
+        Image image;
+        for (int i = images.size() - 1; i >= 0; --i) {
+            image = images.get(i);
+            if (image.checked) {
+                try {
+                    File file = new File(image.path);
+                    file.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                images.remove(i);
             }
-            images.remove(i);
         }
+        setAdapter();
+        mActionMode.finish();
     }
-    setAdapter();
-    mActionMode.finish();
-}
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -297,6 +309,7 @@ public void delSelected(){
         }
 
     }
+
     public static class Image implements Parcelable {
         public String path;
         public Bitmap image;

@@ -18,13 +18,13 @@
 
         <CheckBox
             android:id="@+id/checkDone"
-            android:focusableInTouchMode="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:clickable="false"
-            android:focusable="false" />
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
     </RelativeLayout>
 
     <TextView

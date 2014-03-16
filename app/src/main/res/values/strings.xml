@@ -40,5 +40,34 @@
     <string name="supervizer_code">Код разрешения от сепервайзера</string>
     <string name="get_code">Запросить код</string>
     <string name="send_code">Отправить код</string>
-
+    <string name="requests_sexes">Запрос успешно отправлен. Дождитесь смс с кодом разрешения от супервайзера.</string>
+    <string name="incounted_time">Время прихода</string>
+    <string name="outcounted_time">Время ухода</string>
+    <string name="wrong_time">Неправильное время</string>
+    <string name="have_no_photo">Вы не сделали ни одной фотографии</string>
+    <string name="cost">Цена:</string>
+    <string name="numFases">Количество фейсов:</string>
+    <string name="residue">Остаток:</string>
+    <string name="plaсe">Дополнительного места:</string>
+    <string name="not_correct_tata">Некорректные данные</string>
+    <string name="conformtion">Подтверждение</string>
+    <string name="not_all_fields_filled">Данные не по всем товарам заполнены. Вы
+    действительно хотите отправить незаполненный отчет?"</string>
+    <string name="num_order">Количество товара</string>
+    <string name="date_order">Дата заказа</string>
+    <string name="date_order_done">Дата поставки</string>
+    <string name="num">Количество:</string>
+    <string name="date_order_1">Дата заказа:</string>
+    <string name="date_order_done_1">Дата поставки:</string>
+    <string name="wrong_date">Дата введена неправильно</string>
+    <string name="face_report">Отчет по ассортименту</string>
+    <string name="returned">Возврат</string>
+    <string name="exchange">Обмен товаров</string>
+    <string name="visyaki">Висяки</string>
+    <string name="numRet">Количество возвратов:</string>
+    <string name="resone">Причина возврата:</string>
+    <string name="num_order_1">Количество товара:</string>
+    <string name="date_refresh">Дата обновления:</string>
+    <string name="resone_vis">Причина возникновения:</string>
+    <string name="response">Контактное лицо, ответственное за адаптацию:</string>
 </resources>

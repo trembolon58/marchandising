@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import ru.obsession.merchandising.R;
 
 import java.io.File;
@@ -81,7 +82,7 @@ public class PhotoAdapter extends ArrayAdapter<PhotoReportFragment.Image> {
                 holder.frameLayout.setSelected(false);
             }
         } else {
-                holder.frameLayout.setBackgroundDrawable(null);
+            holder.frameLayout.setBackgroundDrawable(null);
         }
         return v;
     }

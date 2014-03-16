@@ -24,9 +24,9 @@ public class ImageDetailActivity extends ActionBarActivity {
         Intent bundle = getIntent();
         final String path = bundle.getStringExtra(IMAGE);
         try {
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        getSupportActionBar().hide();
-        } catch (Exception e){
+            getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+            getSupportActionBar().hide();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         setContentView(R.layout.progres_image);

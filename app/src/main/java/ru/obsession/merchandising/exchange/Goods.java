@@ -1,8 +1,8 @@
-package ru.obsession.merchandising.order;
+package ru.obsession.merchandising.exchange;
 
 import java.io.Serializable;
 
-public class Order implements Serializable{
+public class Goods implements Serializable{
     String nameCompany;
     int id;
     String description;
@@ -11,8 +11,9 @@ public class Order implements Serializable{
     String weight;
     String format;
     String count;
+    String date;
 
-    public Order(int id, String name, String company, String weight, String format) {
+    public Goods(int id, String name, String company, String weight, String format) {
         this.name = name;
         this.id = id;
         nameCompany = name + " " + company;
@@ -28,6 +29,7 @@ public class Order implements Serializable{
     }
 
     public boolean isFiel() {
-        return count != null && !count.equals("");
+        return count != null && date != null;
     }
+
 }
