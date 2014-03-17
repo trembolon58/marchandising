@@ -35,10 +35,15 @@ public class ReportFragment extends Fragment {
         public void onResponse(String s) {
             try {
                 JSONObject jsonObject = new JSONObject(s);
+                checkExchange.setEnabled(true);
                 checkExchange.setChecked(jsonObject.getBoolean("group_exchange"));
+                checkFace.setEnabled(true);
                 checkFace.setChecked(jsonObject.getBoolean("assortment_report"));
+                checkOrder.setEnabled(true);
                 checkOrder.setChecked(jsonObject.getBoolean("send_order"));
+                checkReturn.setEnabled(true);
                 checkReturn.setChecked(jsonObject.getBoolean("group_return"));
+                checkVisyaky.setEnabled(true);
                 checkVisyaky.setChecked(jsonObject.getBoolean("group_dangling"));
             } catch (Exception e){
                 e.printStackTrace();
@@ -49,7 +54,7 @@ public class ReportFragment extends Fragment {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
             try {
-                Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.requests_error, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }

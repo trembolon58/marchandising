@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -55,19 +54,18 @@ public class PhotoReportFragment extends Fragment {
     private boolean rotait;
     private GridView gridView;
     private int userId;
-    private Response.Listener<String> listener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String s) {
-            getFragmentManager().popBackStack();
-            Toast.makeText(getActivity(), R.string.sexes, Toast.LENGTH_LONG).show();
-        }
-    };
-    private Response.ErrorListener errorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError volleyError) {
-            Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-        }
-    };
+
+    @Override
+    public void onDestroy() {
+        ((MainActivity)getActivity()).needPop = false;
+        super.onDestroy();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        ((MainActivity)getActivity()).needPop = true;
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -250,8 +248,11 @@ public class PhotoReportFragment extends Fragment {
             }
             int shopId = getArguments().getInt(ShopsFragment.SHOP_ID);
             int clientId = getArguments().getInt(ClientFragment.CLIENT_ID);
+            Response.Listener<String> listener = ((MainActivity) getActivity()).listener;
+            Response.ErrorListener errorListener = ((MainActivity) getActivity()).errorListener;
             Request request = new MultiformRequest(userId, shopId, clientId, listener, errorListener, imagePaths);
             ServerApi.getInstance(getActivity()).getQueue().add(request);
+            ((MainActivity)getActivity()).setSupportProgressBarIndeterminateVisibility(true);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getActivity(), R.string.error_sending_report, Toast.LENGTH_LONG).show();

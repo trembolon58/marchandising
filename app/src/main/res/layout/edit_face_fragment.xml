@@ -51,7 +51,7 @@
         android:layout_marginRight="8dp"
         android:ems="10"
         android:singleLine="true"
-        android:inputType="numberDecimal"
+        android:inputType="number"
         android:padding="@dimen/dp4" />
 
     <TextView
@@ -71,7 +71,7 @@
         android:layout_marginRight="8dp"
         android:ems="10"
         android:singleLine="true"
-        android:inputType="numberDecimal"
+        android:inputType="number"
         android:padding="@dimen/dp4" />
 
     <TextView
@@ -90,7 +90,7 @@
         android:layout_marginRight="8dp"
         android:ems="10"
         android:singleLine="true"
-        android:inputType="numberDecimal"
+        android:inputType="number"
         android:padding="@dimen/dp4" />
 
 

@@ -41,6 +41,7 @@ public class MultiformRequest extends Request<String> {
             for (String photo : photos) {
                 this.photos.add(new File(photo));
             }
+            setTag("tag");
             buildMultipartEntity();
         }
     }

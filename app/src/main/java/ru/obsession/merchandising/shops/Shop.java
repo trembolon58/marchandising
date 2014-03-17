@@ -3,7 +3,7 @@ package ru.obsession.merchandising.shops;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Shop implements Parcelable{
+public class Shop implements Parcelable {
     int id;
     String name;
     String address;
@@ -15,6 +15,7 @@ public class Shop implements Parcelable{
         this.name = name;
         this.address = adress;
     }
+
     public static final Parcelable.Creator<Shop> CREATOR;
 
     static {

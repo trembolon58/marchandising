@@ -73,4 +73,5 @@
     <string name="nothing_send">Нет данных для отправки</string>
     <string name="done">Готово</string>
     <string name="sexes_skip">Отчет успешно пропущен</string>
+    <string name="requests_error">Запрос не выполнен по причине проблем с сетью</string>
 </resources>
