@@ -1,5 +1,6 @@
 package ru.obsession.merchandising.order;
 
+        import android.content.Context;
         import android.os.Bundle;
         import android.support.v4.app.Fragment;
         import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ package ru.obsession.merchandising.order;
         import android.view.MenuItem;
         import android.view.View;
         import android.view.ViewGroup;
+        import android.view.inputmethod.InputMethodManager;
         import android.widget.EditText;
         import android.widget.TextView;
 
@@ -62,6 +64,8 @@ public class EditOrderFragment extends Fragment {
             return;
         }
         order.count = count;
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         getTargetFragment().onActivityResult(getTargetRequestCode(), 0, null);
         getFragmentManager().popBackStack();
     }

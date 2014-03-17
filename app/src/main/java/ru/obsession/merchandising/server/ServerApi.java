@@ -60,7 +60,7 @@ public class ServerApi {
         queue.cancelAll(new RequestQueue.RequestFilter() {
             @Override
             public boolean apply(Request<?> request) {
-                return true;
+                return request.getTag() == null;
             }
         });
     }

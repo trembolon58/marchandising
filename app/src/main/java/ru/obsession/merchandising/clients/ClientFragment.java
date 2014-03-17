@@ -35,8 +35,6 @@ import ru.obsession.merchandising.works.WorkFragment;
 public class ClientFragment extends Fragment {
 
     public static final String CLIENT_ID = "client_id";
-    private static final String CLIENT_TAG = "client_tag";
-    private static final String USER_ID = "uset_id";
     private ListView listView;
     private ArrayList<Client> clients;
     private ProgressBar progressBar;
@@ -46,26 +44,22 @@ public class ClientFragment extends Fragment {
         @Override
         public void onResponse(String s) {
             try {
-                clients = new ArrayList<Client>();
                 progressBar.setVisibility(View.GONE);
                 JSONArray jsonArray = new JSONArray(s);
-                for (int i = 0; i < jsonArray.length(); ++i) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    int id = jsonObject.getInt("id");
-                    String name = jsonObject.getString("name");
-                    boolean done = jsonObject.getInt("ready") == 1;
-                    clients.add(new Client(id, name, done));
+                if (listView.getAdapter() == null || clients.size() != jsonArray.length()) {
+                    addClients(jsonArray);
+                } else {
+                    updateClients(jsonArray);
                 }
-                listView.setAdapter(new ClientAdapter(getActivity(), clients));
-            } catch(JSONException e) {
-                try{
-                    Integer.getInteger(s);
+            } catch (JSONException e) {
+                try {
+                    Integer.valueOf(s);
                     FragmentManager manager = getFragmentManager();
                     manager.popBackStack();
                     Fragment fragment = new GetAccessFragment();
                     fragment.setArguments(getArguments());
                     manager.beginTransaction().replace(R.id.container, fragment).addToBackStack("tag").commit();
-                } catch (Exception ex){
+                } catch (Exception ex) {
                     Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
@@ -73,12 +67,37 @@ public class ClientFragment extends Fragment {
             }
         }
     };
+
+    private void addClients(JSONArray jsonArray) throws JSONException {
+        clients = new ArrayList<Client>();
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            int id = jsonObject.getInt("id");
+            String name = jsonObject.getString("name");
+            boolean done = jsonObject.getInt("ready") == 1;
+            clients.add(new Client(id, name, done));
+        }
+        listView.setAdapter(new ClientAdapter(getActivity(), clients));
+    }
+
+    private void updateClients(JSONArray jsonArray) throws JSONException {
+        listView.setVisibility(View.VISIBLE);
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            Client client = clients.get(i);
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            client.id = jsonObject.getInt("id");
+            client.name = jsonObject.getString("name");
+            client.done = jsonObject.getInt("ready") == 1;
+        }
+        ((ClientAdapter) listView.getAdapter()).notifyDataSetChanged();
+    }
+
     private Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
             try {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.requests_error, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -88,17 +107,17 @@ public class ClientFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-
         View root = inflater.inflate(R.layout.list_view_progress, container, false);
         Bundle bundle = getArguments();
         shopId = bundle.getInt(ShopsFragment.SHOP_ID);
         listView = (ListView) root.findViewById(R.id.listView);
-        if (savedInstanceState == null) {
-            userId = bundle.getInt(MainActivity.USER_ID, -1);
-            ServerApi serverApi = ServerApi.getInstance(getActivity());
-            serverApi.getClients(userId, shopId, listener, errorListener);
-        } else {
-            retainInstance(savedInstanceState);
+        progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
+        userId = bundle.getInt(MainActivity.USER_ID, -1);
+        ServerApi serverApi = ServerApi.getInstance(getActivity());
+        serverApi.getClients(userId, shopId, listener, errorListener);
+        if (clients != null) {
+            progressBar.setVisibility(View.GONE);
+            listView.setAdapter(new ClientAdapter(getActivity(), clients));
         }
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -111,21 +130,7 @@ public class ClientFragment extends Fragment {
                 transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
             }
         });
-        progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
         return root;
-    }
-
-    private void retainInstance(Bundle savedState) {
-        userId = savedState.getInt(USER_ID, -1);
-        clients = savedState.getParcelableArrayList(CLIENT_TAG);
-        listView.setAdapter(new ClientAdapter(getActivity(), clients));
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(CLIENT_TAG, clients);
-        outState.putInt(USER_ID, userId);
     }
 
     @Override
@@ -139,8 +144,8 @@ public class ClientFragment extends Fragment {
         FragmentTransaction transaction;
         switch (item.getItemId()) {
             case R.id.menu_refresh:
-                progressBar.setVisibility(View.GONE);
-                listView.setAdapter(null);
+                progressBar.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
                 ServerApi serverApi = ServerApi.getInstance(getActivity());
                 serverApi.getClients(userId, shopId, listener, errorListener);
                 return true;

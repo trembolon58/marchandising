@@ -34,8 +34,6 @@ import ru.obsession.merchandising.server.ServerApi;
 public class ShopsFragment extends Fragment {
 
     public final static String SHOP_ID = "shop_id";
-    private static final String SHOPS_TAG = "shops_tag";
-    private static final String USER_ID = "user_id";
     private ListView listView;
     private ArrayList<Shop> shops;
     private ProgressBar progressBar;
@@ -44,31 +42,53 @@ public class ShopsFragment extends Fragment {
         @Override
         public void onResponse(String s) {
             try {
-                shops = new ArrayList<Shop>();
                 progressBar.setVisibility(View.GONE);
                 JSONArray jsonArray = new JSONArray(s);
-                for (int i = 0; i < jsonArray.length(); ++i) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    int id = jsonObject.getInt("id");
-                    String name = jsonObject.getString("name");
-                    String address = jsonObject.getString("address");
-                    boolean done = jsonObject.getInt("ready") == 1;
-                    shops.add(new Shop(id, name, address, done));
+                if (listView.getAdapter() == null || shops.size() != jsonArray.length()) {
+                    addShops(jsonArray);
+                } else {
+                    updateShops(jsonArray);
                 }
-                listView.setAdapter(new ShopsAdapter(getActivity(), shops));
-            } catch(JSONException e) {
+            } catch (JSONException e) {
                 Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
+
+    private void updateShops(JSONArray jsonArray) throws JSONException {
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            Shop shop = shops.get(i);
+            shop.id = jsonObject.getInt("id");
+            shop.name = jsonObject.getString("name");
+            shop.address = jsonObject.getString("address");
+            shop.done = jsonObject.getInt("ready") == 1;
+        }
+        listView.setVisibility(View.VISIBLE);
+        ((ShopsAdapter) listView.getAdapter()).notifyDataSetChanged();
+    }
+
+    private void addShops(JSONArray jsonArray) throws JSONException {
+        shops = new ArrayList<Shop>();
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            int id = jsonObject.getInt("id");
+            String name = jsonObject.getString("name");
+            String address = jsonObject.getString("address");
+            boolean done = jsonObject.getInt("ready") == 1;
+            shops.add(new Shop(id, name, address, done));
+        }
+        listView.setAdapter(new ShopsAdapter(getActivity(), shops));
+    }
+
     private Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
             try {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.requests_error, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -80,7 +100,7 @@ public class ShopsFragment extends Fragment {
         setHasOptionsMenu(true);
         View root = inflater.inflate(R.layout.list_view_progress, container, false);
         listView = (ListView) root.findViewById(R.id.listView);
-        if (savedInstanceState == null) {
+        progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
             SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
             userId = preferences.getInt(MainActivity.USER_ID, -1);
             if (userId == -1) {
@@ -90,8 +110,9 @@ public class ShopsFragment extends Fragment {
                 ServerApi serverApi = ServerApi.getInstance(getActivity());
                 serverApi.getShops(userId, listener, errorListener);
             }
-        } else {
-            retainInstance(savedInstanceState);
+        if (shops != null) {
+            listView.setAdapter(new ShopsAdapter(getActivity(),shops));
+            progressBar.setVisibility(View.GONE);
         }
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -105,21 +126,7 @@ public class ShopsFragment extends Fragment {
                 transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
             }
         });
-        progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
         return root;
-    }
-
-    private void retainInstance(Bundle savedState) {
-       userId = savedState.getInt(USER_ID,-1);
-        shops = savedState.getParcelableArrayList(SHOPS_TAG);
-        listView.setAdapter(new ShopsAdapter(getActivity(), shops));
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(SHOPS_TAG, shops);
-        outState.putInt(USER_ID, userId);
     }
 
     @Override
@@ -131,8 +138,8 @@ public class ShopsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
-                progressBar.setVisibility(View.GONE);
-                listView.setAdapter(null);
+                progressBar.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
                 ServerApi serverApi = ServerApi.getInstance(getActivity());
                 serverApi.getShops(userId, listener, errorListener);
                 return true;

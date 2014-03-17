@@ -68,7 +68,7 @@ public class ExchengedFragment extends Fragment {
         public void onErrorResponse(VolleyError volleyError) {
             try {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), volleyError.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.requests_error, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }

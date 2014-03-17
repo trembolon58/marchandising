@@ -32,9 +32,6 @@ import ru.obsession.merchandising.shops.ShopsFragment;
 
 public class WorkFragment extends Fragment {
 
-    private final static String USER_ID = "user_id";
-    private static final String WORK_TAG = "work_tag";
-    public static final String WORK_ID = "work_id";
     private ListView listView;
     private ProgressBar progressBar;
     private ArrayList<Work> works;
@@ -45,16 +42,13 @@ public class WorkFragment extends Fragment {
         @Override
         public void onResponse(String s) {
             try {
-                works = new ArrayList<Work>();
-                progressBar.setVisibility(View.GONE);
                 JSONArray jsonArray = new JSONArray(s);
-                for (int i = 0; i < jsonArray.length(); ++i) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String name = jsonObject.getString("name");
-                    String desc = jsonObject.getString("desc");
-                    works.add(new Work(name, desc));
+                progressBar.setVisibility(View.GONE);
+                if (listView.getAdapter() == null || works.size() != jsonArray.length()) {
+                    addWorks(jsonArray);
+                } else {
+                    updateWorks(jsonArray);
                 }
-                listView.setAdapter(new WorksAdapter(getActivity(), works));
             } catch (JSONException e) {
                 Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
@@ -62,6 +56,29 @@ public class WorkFragment extends Fragment {
             }
         }
     };
+
+    private void updateWorks(JSONArray jsonArray) throws JSONException {
+        listView.setVisibility(View.VISIBLE);
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            Work work = works.get(i);
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            work.name = jsonObject.getString("name");
+            work.description = jsonObject.getString("desc");
+        }
+        ((WorksAdapter) listView.getAdapter()).notifyDataSetChanged();
+    }
+
+    private void addWorks(JSONArray jsonArray) throws JSONException {
+        works = new ArrayList<Work>();
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String name = jsonObject.getString("name");
+            String desc = jsonObject.getString("desc");
+            works.add(new Work(name, desc));
+        }
+        listView.setAdapter(new WorksAdapter(getActivity(), works));
+    }
+
     private Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
@@ -74,11 +91,6 @@ public class WorkFragment extends Fragment {
         }
     };
 
-    private void retainInstance(Bundle savedState) {
-        userId = savedState.getInt(USER_ID, -1);
-        works = savedState.getParcelableArrayList(WORK_TAG);
-        listView.setAdapter(new WorksAdapter(getActivity(), works));
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,22 +101,15 @@ public class WorkFragment extends Fragment {
         shopId = bundle.getInt(ShopsFragment.SHOP_ID);
         clientId = bundle.getInt(ClientFragment.CLIENT_ID);
         userId = bundle.getInt(MainActivity.USER_ID);
-        if (savedInstanceState == null) {
-            ServerApi serverApi = ServerApi.getInstance(getActivity());
-            serverApi.getWorks(userId, shopId, clientId, listener, errorListener);
-        } else {
-            retainInstance(savedInstanceState);
-        }
         progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
+        ServerApi serverApi = ServerApi.getInstance(getActivity());
+        serverApi.getWorks(userId, shopId, clientId, listener, errorListener);
+        if (works != null) {
+            progressBar.setVisibility(View.GONE);
+            listView.setAdapter(new WorksAdapter(getActivity(), works));
+        }
         listView.setSelector(android.R.color.transparent);
         return root;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(WORK_TAG, works);
-        outState.putInt(USER_ID, userId);
     }
 
     @Override
@@ -118,8 +123,8 @@ public class WorkFragment extends Fragment {
         FragmentTransaction transaction;
         switch (item.getItemId()) {
             case R.id.menu_refresh:
-                progressBar.setVisibility(View.GONE);
-                listView.setAdapter(null);
+                progressBar.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
                 ServerApi serverApi = ServerApi.getInstance(getActivity());
                 serverApi.getWorks(userId, shopId, clientId, listener, errorListener);
                 return true;
