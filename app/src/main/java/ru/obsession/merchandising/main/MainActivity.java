@@ -1,8 +1,6 @@
 package ru.obsession.merchandising.main;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,8 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import ru.obsession.merchandising.R;
+import ru.obsession.merchandising.help.HelpActivity;
 import ru.obsession.merchandising.login.AutorizationFragment;
-import ru.obsession.merchandising.login.GenericAccountService;
 import ru.obsession.merchandising.login.SyncUtils;
 import ru.obsession.merchandising.shops.ShopsFragment;
 
@@ -66,12 +64,6 @@ public class MainActivity extends ActionBarActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
-    public boolean existAccount() {
-        AccountManager accountManager = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
-        Account[] accounts = accountManager.getAccountsByType(GenericAccountService.ACCOUNT_TYPE);
-        return accounts != null && accounts.length != 0;
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -95,6 +87,10 @@ public class MainActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_logout:
                 logOut();
+                return true;
+            case R.id.action_help:
+                Intent intent = new Intent(this, HelpActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
