@@ -1286,20 +1286,21 @@ containing a value of this type.
         public static final int face_report_item=0x7f030021;
         public static final int fragment_navigation_drawer=0x7f030022;
         public static final int get_access_fragment=0x7f030023;
-        public static final int image_view_checked=0x7f030024;
-        public static final int list_view_progress=0x7f030025;
-        public static final int login_fragment=0x7f030026;
-        public static final int main=0x7f030027;
-        public static final int order_fragment=0x7f030028;
-        public static final int order_item=0x7f030029;
-        public static final int progres_image=0x7f03002a;
-        public static final int report_fragment=0x7f03002b;
-        public static final int return_item=0x7f03002c;
-        public static final int shop_item=0x7f03002d;
-        public static final int shop_text_view=0x7f03002e;
-        public static final int support_simple_spinner_dropdown_item=0x7f03002f;
-        public static final int visyaky_item=0x7f030030;
-        public static final int work_item=0x7f030031;
+        public static final int help_activity=0x7f030024;
+        public static final int image_view_checked=0x7f030025;
+        public static final int list_view_progress=0x7f030026;
+        public static final int login_fragment=0x7f030027;
+        public static final int main=0x7f030028;
+        public static final int order_fragment=0x7f030029;
+        public static final int order_item=0x7f03002a;
+        public static final int progres_image=0x7f03002b;
+        public static final int report_fragment=0x7f03002c;
+        public static final int return_item=0x7f03002d;
+        public static final int shop_item=0x7f03002e;
+        public static final int shop_text_view=0x7f03002f;
+        public static final int support_simple_spinner_dropdown_item=0x7f030030;
+        public static final int visyaky_item=0x7f030031;
+        public static final int work_item=0x7f030032;
     }
     public static final class menu {
         public static final int client_menu=0x7f0e0000;
