@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
@@ -24,7 +23,6 @@ public class ShopsAdapter extends ArrayAdapter<Shop> {
     public static class ViewHolder {
         TextView name;
         TextView addres;
-        CheckBox checkBox;
     }
 
     @Override
@@ -35,7 +33,6 @@ public class ShopsAdapter extends ArrayAdapter<Shop> {
             v = lInflater.inflate(R.layout.shop_item, null);
             holder.addres = (TextView) v.findViewById(R.id.textAddress);
             holder.name = (TextView) v.findViewById(R.id.textName);
-            holder.checkBox = (CheckBox) v.findViewById(R.id.checkDone);
             v.setTag(holder);
         } else {
             holder = (ViewHolder) v.getTag();
@@ -43,7 +40,6 @@ public class ShopsAdapter extends ArrayAdapter<Shop> {
         Shop shop = getItem(position);
         holder.addres.setText(shop.address);
         holder.name.setText(shop.name);
-        holder.checkBox.setChecked(shop.done);
         return v;
     }
 }

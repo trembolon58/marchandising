@@ -16,9 +16,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import ru.obsession.merchandising.R;
-import ru.obsession.merchandising.clients.ClientFragment;
 import ru.obsession.merchandising.main.MainActivity;
 import ru.obsession.merchandising.server.ServerApi;
+import ru.obsession.merchandising.shops.ShopsListFragment;
 
 public class GetAccessFragment extends Fragment {
     private Response.Listener<String> resGetAccess = new Response.Listener<String>() {
@@ -40,8 +40,7 @@ public class GetAccessFragment extends Fragment {
         public void onResponse(String s) {
             try {
                 if (s.equals("1")) {
-                    Fragment fragment = new ClientFragment();
-                    fragment.setArguments(getArguments());
+                    Fragment fragment = new ShopsListFragment();
                     FragmentManager manager = getFragmentManager();
                     manager.popBackStack();
                     manager.beginTransaction().replace(R.id.container, fragment).addToBackStack("tag").commit();
@@ -72,7 +71,8 @@ public class GetAccessFragment extends Fragment {
         Button getAccess = (Button) root.findViewById(R.id.buttonGetCode);
         Button sendCode = (Button) root.findViewById(R.id.buttonSendCode);
         if (savedInstanceState == null) {
-            SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences preferences =
+                    getActivity().getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
             userId = preferences.getInt(MainActivity.USER_ID, -1);
             if (userId == -1) {
                 ((MainActivity) getActivity()).logOut();
