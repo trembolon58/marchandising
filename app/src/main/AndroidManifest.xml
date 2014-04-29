@@ -10,15 +10,20 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:name=".main.Marchandising"
         android:theme="@style/AppTheme" >
         <activity
             android:name="ru.obsession.merchandising.main.MainActivity"
             android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,6 +51,14 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_image_detail">
         </activity>
+        <service android:name=".main.PhotoReportingService"/>
+        <service android:name=".main.DownloadScheduleService"/>
+        <receiver android:name= ".main.WifiReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

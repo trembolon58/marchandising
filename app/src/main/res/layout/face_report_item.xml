@@ -16,7 +16,7 @@
         android:id="@+id/textDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp4"/>
+        android:padding="@dimen/dp4" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -28,14 +28,17 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:text="@string/cost"/>
+            android:layout_toLeftOf="@+id/textCost"
+            android:text="@string/cost" />
 
-        <TextView
+        <EditText
             android:id="@+id/textCost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            android:ems="7"
+            android:singleLine="true" />
 
     </RelativeLayout>
 
@@ -50,14 +53,18 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:text="@string/numFases"/>
+            android:layout_toLeftOf="@+id/textNumFaces"
+            android:text="@string/numFases" />
 
-        <TextView
+        <EditText
             android:id="@+id/textNumFaces"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            android:ems="7"
+            android:inputType="numberDecimal"
+            android:singleLine="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -71,14 +78,18 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:text="@string/residue"/>
+            android:layout_toLeftOf="@+id/textResidue"
+            android:text="@string/residue" />
 
-        <TextView
+        <EditText
             android:id="@+id/textResidue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            android:ems="7"
+            android:inputType="numberDecimal"
+            android:singleLine="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -92,14 +103,42 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:text="@string/plaсe"/>
+            android:layout_toLeftOf="@+id/textVisyak"
+            android:text="@string/visyak" />
 
-        <TextView
-            android:id="@+id/textPlace"
+        <EditText
+            android:id="@+id/textVisyak"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            android:ems="7"
+            android:inputType="numberDecimal"
+            android:singleLine="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp4">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/textReturn"
+            android:text="@string/returned" />
+
+        <EditText
+            android:id="@+id/textReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:ems="7"
+            android:inputType="numberDecimal"
+            android:singleLine="true" />
     </RelativeLayout>
 
 </LinearLayout>

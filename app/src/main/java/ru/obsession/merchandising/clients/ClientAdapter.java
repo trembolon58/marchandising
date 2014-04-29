@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class ClientAdapter extends ArrayAdapter<Client> {
 
     public static class ViewHolder {
         TextView name;
-        CheckBox checkBox;
+        TextView phone;
     }
 
     @Override
@@ -32,14 +31,14 @@ public class ClientAdapter extends ArrayAdapter<Client> {
             holder = new ViewHolder();
             v = lInflater.inflate(R.layout.client_item, null);
             holder.name = (TextView) v.findViewById(R.id.textName);
-            holder.checkBox = (CheckBox) v.findViewById(R.id.checkDone);
+            holder.phone = (TextView) v.findViewById(R.id.textPhone);
             v.setTag(holder);
         } else {
             holder = (ViewHolder) v.getTag();
         }
         Client client = getItem(position);
         holder.name.setText(client.name);
-        holder.checkBox.setChecked(client.done);
+        holder.phone.setText(client.phone);
         return v;
     }
 }

@@ -44,7 +44,7 @@
     <string name="incounted_time">Время прихода</string>
     <string name="outcounted_time">Время ухода</string>
     <string name="wrong_time">Неправильное время</string>
-    <string name="have_no_photo">Вы не сделали ни одной фотографии</string>
+    <string name="have_no_photo">Фотографии для отправки отсутствуют</string>
     <string name="cost">Цена:</string>
     <string name="numFases">Количество фейсов:</string>
     <string name="residue">Остаток:</string>
@@ -61,7 +61,7 @@
     <string name="date_order_done_1">Дата поставки:</string>
     <string name="wrong_date">Дата введена неправильно</string>
     <string name="face_report">Отчет по ассортименту</string>
-    <string name="returned">Возврат</string>
+    <string name="returned">Возврат/Обмен:</string>
     <string name="exchange">Обмен товаров</string>
     <string name="visyaki">Висяки</string>
     <string name="numRet">Количество возвратов:</string>
@@ -74,4 +74,21 @@
     <string name="done">Готово</string>
     <string name="sexes_skip">Отчет успешно пропущен</string>
     <string name="requests_error">Запрос не выполнен по причине проблем с сетью</string>
+    <string name="send_report">Отправить отчеты</string>
+    <string name="save">Сохранить</string>
+    <string name="send_photo">Отправить фотографии</string>
+    <string name="enable_wifi">Отправка фото возможна только через vifi, включить?</string>
+    <string name="enable_wifi_ok">Включить vifi</string>
+    <string name="actual_version">Вы используете актуальную вертию задаий</string>
+    <string name="error_dounloading">Ошибка загрузки заданий, попробуйте снова</string>
+    <string name="db_refresh">Обновление базы данных</string>
+    <string name="sending_photo">Оправка фотографий завершена</string>
+    <string name="db_version_refreshed">Версия базы данных обнолена</string>
+    <string name="special_tascs">Специальные задания</string>
+    <string name="messages">Сообщения</string>
+    <string name="visyak">Висяк:</string>
+    <string name="all_face">Общий фейс</string>
+    <string name="by_schedule">По расписанию</string>
+    <string name="from">из</string>
+    <string name="send_result">%1$d из %2$d фотографий отправлено</string>
 </resources>

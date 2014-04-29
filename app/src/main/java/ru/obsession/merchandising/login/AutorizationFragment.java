@@ -17,8 +17,8 @@ import com.android.volley.VolleyError;
 
 import ru.obsession.merchandising.R;
 import ru.obsession.merchandising.main.MainActivity;
+import ru.obsession.merchandising.main.MainFragment;
 import ru.obsession.merchandising.server.ServerApi;
-import ru.obsession.merchandising.shops.ShopsFragment;
 
 public class AutorizationFragment extends Fragment {
 
@@ -54,15 +54,16 @@ public class AutorizationFragment extends Fragment {
             ServerApi.getInstance(getActivity()).singUp(name,password, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String s) {
-                    try{
-                        SharedPreferences preferences = getActivity().getPreferences(getActivity().MODE_PRIVATE);
-                        SharedPreferences.Editor ed = preferences.edit();
-                        ed.putInt(MainActivity.USER_ID,Integer.valueOf(s));
-                        ed.commit();
-                    startProfile();
-                    } catch (Exception e){
-                        Toast.makeText(getActivity(),s,Toast.LENGTH_LONG).show();
-                    }
+                        try {
+                            SharedPreferences preferences = getActivity()
+                                    .getSharedPreferences(MainActivity.PREFERENSES_NAME,getActivity().MODE_PRIVATE);
+                            SharedPreferences.Editor ed = preferences.edit();
+                            ed.putInt(MainActivity.USER_ID, Integer.valueOf(s));
+                            ed.commit();
+                            startProfile();
+                        } catch (Exception e) {
+                            Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+                        }
                 }
             }, new Response.ErrorListener() {
                         @Override
@@ -75,7 +76,7 @@ public class AutorizationFragment extends Fragment {
 
     private void startProfile() {
         SyncUtils.CreateSyncAccount(getActivity(), name, password);
-        Fragment fragment = new ShopsFragment();
+        Fragment fragment = new MainFragment();
         getFragmentManager().popBackStack();
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }

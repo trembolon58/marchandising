@@ -12,12 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import ru.obsession.merchandising.R;
-
 import java.io.File;
 import java.util.ArrayList;
 
-public class PhotoAdapter extends ArrayAdapter<PhotoReportFragment.Image> {
+import ru.obsession.merchandising.R;
+
+public class PhotoAdapter extends ArrayAdapter<Photo> {
     private LayoutInflater lInflater;
     private Resources resources;
 
@@ -27,8 +27,8 @@ public class PhotoAdapter extends ArrayAdapter<PhotoReportFragment.Image> {
 
     private boolean withChecking;
 
-    public PhotoAdapter(Context context, ArrayList<PhotoReportFragment.Image> images, boolean withChecking) {
-        super(context, R.layout.image_view_checked, R.id.imageView, images);
+    public PhotoAdapter(Context context, ArrayList<Photo> photos, boolean withChecking) {
+        super(context, R.layout.image_view_checked, R.id.imageView, photos);
         this.withChecking = withChecking;
         resources = context.getResources();
         lInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -51,32 +51,36 @@ public class PhotoAdapter extends ArrayAdapter<PhotoReportFragment.Image> {
         } else {
             holder = (ViewHolder) v.getTag();
         }
-        final PhotoReportFragment.Image pathImage = getItem(position);
-        if (pathImage.image == null && new File(pathImage.path).exists()) {
+        final Photo pathPhoto = getItem(position);
+        if (pathPhoto.image == null && new File(pathPhoto.path).exists()) {
             new AsyncTask<Bitmap, Bitmap, Bitmap>() {
                 @Override
                 protected Bitmap doInBackground(Bitmap[] params) {
                     int hieght = (int) resources.getDimension(R.dimen.image_height);
-                    return PhotoEditSize.rotaitPhoto(pathImage.path, hieght, hieght);
+                    return PhotoEditSize.rotaitPhoto(pathPhoto.path, hieght, hieght);
                 }
 
                 @Override
                 protected void onPostExecute(Bitmap o) {
                     super.onPostExecute(o);
-                    getItem(position).image = o;
-                    notifyDataSetChanged();
+                    try {
+                        getItem(position).image = o;
+                        notifyDataSetChanged();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }.execute();
         } else {
-            if (pathImage.image == null) {
+            if (pathPhoto.image == null) {
                 holder.imageView.setImageResource(R.drawable.izobrajenieotsutstvuet5);
             } else {
-                holder.imageView.setImageBitmap(pathImage.image);
+                holder.imageView.setImageBitmap(pathPhoto.image);
             }
         }
         if (withChecking) {
             holder.frameLayout.setBackgroundResource(R.drawable.selector_image_view);
-            if (pathImage.checked) {
+            if (pathPhoto.checked) {
                 holder.frameLayout.setSelected(true);
             } else {
                 holder.frameLayout.setSelected(false);

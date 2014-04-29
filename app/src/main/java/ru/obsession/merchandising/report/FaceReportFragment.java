@@ -1,15 +1,9 @@
 package ru.obsession.merchandising.report;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -19,10 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -36,65 +28,41 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import ru.obsession.merchandising.R;
+import ru.obsession.merchandising.clients.Client;
+import ru.obsession.merchandising.clients.ClientsListFragment;
+import ru.obsession.merchandising.database.DatabaseApi;
 import ru.obsession.merchandising.main.MainActivity;
-import ru.obsession.merchandising.server.ServerApi;
-import ru.obsession.merchandising.shops.ShopsFragment;
+import ru.obsession.merchandising.shops.Shop;
+import ru.obsession.merchandising.shops.ShopsListFragment;
 
 public class FaceReportFragment extends Fragment {
 
-    public static final String GOODS = "orders";
     private ListView listView;
     public ArrayList<Goods> goods;
     private int incountHour;
-    private int outcountHour;
     private int incountMin;
-    private int outcountMin;
-    private Response.Listener<String> listener = new Response.Listener<String>() {
+    private Client client;
+    private Shop shop;
+    private int userId;
 
-        @Override
-        public void onResponse(String s) {
-            try {
-                goods = new ArrayList<Goods>();
-                progressBar.setVisibility(View.GONE);
-                JSONArray jsonArray = new JSONArray(s);
-                for (int i = 0; i < jsonArray.length(); ++i) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String name = jsonObject.getString("name");
-                    String company = jsonObject.getString("company");
-                    String format = jsonObject.getString("format");
-                    String weight = jsonObject.getString("weight");
-                    int id = jsonObject.getInt("id");
-                    goods.add(new Goods(id,name, company, weight, format));
-                }
-                listView.setAdapter(new FaceReportAdapter(getActivity(), goods));
-            } catch (JSONException e) {
-                Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
     private Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
             try {
-                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), R.string.requests_error, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
-    private ProgressBar progressBar;
-    private EditText editIncounterTime;
-    private EditText editOutcointerTime;
+    private EditText editIncomerTime;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View root = inflater.inflate(R.layout.face_report_fragment, container, false);
-        editIncounterTime = (EditText) root.findViewById(R.id.editIncounterTime);
-        editIncounterTime.setOnClickListener(new View.OnClickListener() {
+        editIncomerTime = (EditText) root.findViewById(R.id.editIncounterTime);
+        editIncomerTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TimePickerDialog dialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
@@ -102,63 +70,28 @@ public class FaceReportFragment extends Fragment {
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         incountHour = hourOfDay;
                         incountMin = minute;
-                        editIncounterTime.setText(String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
+                        editIncomerTime.setText(String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
                     }
-                }, incountHour, incountMin, false);
-                dialog.show();
-            }
-        });
-        editOutcointerTime = (EditText) root.findViewById(R.id.editOutCounterTime);
-        editOutcointerTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog dialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        outcountHour = hourOfDay;
-                        outcountMin = minute;
-                        editOutcointerTime.setText(String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
-                    }
-                }, outcountHour, outcountMin, false);
+                }, incountHour, incountMin, true);
                 dialog.show();
             }
         });
         listView = (ListView) root.findViewById(R.id.listView);
-        progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
+        listView.setClickable(false);
+        listView.setItemsCanFocus(true);
         Bundle bundle = getArguments();
-        int shopId = bundle.getInt(ShopsFragment.SHOP_ID);
-        if (goods == null) {
-            ServerApi serverApi = ServerApi.getInstance(getActivity());
-            serverApi.getAccortiment(shopId, listener, errorListener);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            listView.setAdapter(new FaceReportAdapter(getActivity(), goods));
-        }
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment fragment = new EditFaceReportFragment();
-                Bundle bundle = new Bundle();
-                Goods good = ((FaceReportAdapter)listView.getAdapter()).getItem(position);
-                bundle.putSerializable(GOODS, good);
-                fragment.setArguments(bundle);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
-            }
-        });
+        shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
+        client = (Client) bundle.getSerializable(ClientsListFragment.CLIENT_TAG);
+        userId = bundle.getInt(MainActivity.USER_ID);
+        goods = DatabaseApi.getInstance(getActivity()).getAssortment(userId, client.id, shop);
+        listView.setAdapter( new FaceReportAdapter(getActivity(), goods));
         return root;
     }
- private void startDialog(){
 
- }
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != 1) {
-            ((FaceReportAdapter) listView.getAdapter()).notifyDataSetChanged();
-        } else {
-            send();
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onDestroyView() {
+        super.onDestroyView();
+        DatabaseApi.getInstance(getActivity()).saveReport(goods, userId, client.id, shop.id);
     }
 
     @Override
@@ -202,83 +135,29 @@ public class FaceReportFragment extends Fragment {
     }
 
     private void sendResult() {
-        boolean inputed = true;
-        if (incountHour > outcountHour || incountHour == outcountHour && incountMin >= outcountMin) {
-            Toast.makeText(getActivity(), R.string.wrong_time, Toast.LENGTH_LONG).show();
-            return;
-        }
-        for (Goods good : goods) {
-            if (!good.isFiel()) {
-                inputed = false;
-                break;
-            }
-        }
-        if (inputed) {
-            send();
-        } else {
-            DialogFragment fragment = new NotFeelDialog();
-            fragment.setArguments(getArguments());
-            fragment.show(getFragmentManager(), "not_feel_dialog");
-        }
-    }
-
-    private void send() {
         String inTime = String.valueOf(incountHour) + ":" + String.valueOf(incountMin);
-        String outTime = String.valueOf(outcountHour) + ":" + String.valueOf(outcountMin);
-        ServerApi serverApi = ServerApi.getInstance(getActivity());
-        int userId = getArguments().getInt(MainActivity.USER_ID);
-        int shopId = getArguments().getInt(ShopsFragment.SHOP_ID);
+        String allFace = ((EditText) getView().findViewById(R.id.editAllFace)).getText().toString();
         JSONArray jsonArray = createJSONArray();
         if (jsonArray.length() == 0){
             Toast.makeText(getActivity(),R.string.nothing_send,Toast.LENGTH_LONG).show();
-            return;
         }
-        serverApi.sendFacesReport(userId, shopId, jsonArray, inTime, outTime, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String s) {
-                try {
-                    Toast.makeText(getActivity(), R.string.sexes, Toast.LENGTH_LONG).show();
-                    getFragmentManager().popBackStack();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, errorListener);
     }
 
     private JSONArray createJSONArray() {
         JSONArray jsonArray = new JSONArray();
         for (Goods good : goods) {
-            if (good.isFiel()) {
                 JSONObject object = new JSONObject();
                 try {
                     object.put("id", good.id);
                     object.put("price", good.cost);
                     object.put("face_count", good.faces);
-                    object.put("shelf_residue", good.recidue);
+                    object.put("shelf_residue", good.residue);
                     object.put("additional_seat", good.place);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 jsonArray.put(object);
-            }
         }
         return jsonArray;
-    }
-
-    private static class NotFeelDialog extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            setTargetFragment(getFragmentManager().findFragmentByTag(MainActivity.FASE_REPORT), 1);
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.conformtion)
-                    .setMessage(R.string.not_all_fields_filled)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            getTargetFragment().onActivityResult(1, 1, null);
-                        }
-                    }).setNegativeButton(R.string.cancel, null).create();
-        }
     }
 }

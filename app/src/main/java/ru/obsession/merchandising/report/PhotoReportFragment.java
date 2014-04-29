@@ -2,12 +2,9 @@ package ru.obsession.merchandising.report;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -24,59 +21,32 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import ru.obsession.merchandising.R;
-import ru.obsession.merchandising.clients.ClientFragment;
+import ru.obsession.merchandising.clients.Client;
+import ru.obsession.merchandising.clients.ClientsListFragment;
+import ru.obsession.merchandising.database.DatabaseApi;
 import ru.obsession.merchandising.main.MainActivity;
-import ru.obsession.merchandising.server.MultiformRequest;
-import ru.obsession.merchandising.server.ServerApi;
-import ru.obsession.merchandising.shops.ShopsFragment;
+import ru.obsession.merchandising.shops.Shop;
+import ru.obsession.merchandising.shops.ShopsListFragment;
 
 public class PhotoReportFragment extends Fragment {
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int MEDIA_TYPE_IMAGE = 1;
-    private static final String NEED_CONTEXT_BAR = "context_bar";
-    private static final String NUM_SELECTED = "num_selected";
-    private static final String ADAPTER = "adapter";
-    private ArrayList<Image> images;
+    private ArrayList<Photo> photos;
+    private Shop shop;
+    private Client client;
     private int numSelected = 0;
     private ActionMode mActionMode;
     private boolean longClick;
     private boolean createdCab;
-    private boolean rotait;
     private GridView gridView;
     private int userId;
-
-    @Override
-    public void onDestroy() {
-        ((MainActivity)getActivity()).needPop = false;
-        super.onDestroy();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).needPop = true;
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (createdCab) {
-            rotait = true;
-        }
-        outState.putParcelableArrayList(ADAPTER, images);
-        outState.putInt(NUM_SELECTED, numSelected);
-        outState.putBoolean(NEED_CONTEXT_BAR, createdCab);
-    }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
@@ -122,16 +92,16 @@ public class PhotoReportFragment extends Fragment {
         }
 
         private void unselect() {
-            if (images != null) {
-                for (Image image : images) {
-                    image.checked = false;
+            if (photos != null) {
+                for (Photo photo : photos) {
+                    photo.checked = false;
                 }
             }
             numSelected = 0;
         }
 
         public void onDestroyActionMode(ActionMode mode) {
-            if (longClick || rotait) {
+            if (longClick) {
                 return;
             }
             createdCab = false;
@@ -152,17 +122,17 @@ public class PhotoReportFragment extends Fragment {
     }
 
     private void setAdapter() {
-        PhotoAdapter gridAdapterImage = new PhotoAdapter(getActivity(), images, createdCab);
+        PhotoAdapter gridAdapterImage = new PhotoAdapter(getActivity(), photos, createdCab);
         gridView.setAdapter(gridAdapterImage);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mActionMode != null) {
-                    if (images.get(position).checked) {
-                        images.get(position).checked = false;
+                    if (photos.get(position).checked) {
+                        photos.get(position).checked = false;
                         numSelected--;
                     } else {
-                        images.get(position).checked = true;
+                        photos.get(position).checked = true;
                         numSelected++;
                     }
                     ((ArrayAdapter) gridView.getAdapter()).notifyDataSetChanged();
@@ -170,7 +140,7 @@ public class PhotoReportFragment extends Fragment {
                     mActionMode.setTitle(plural);
                 } else {
                     Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-                    intent.putExtra(ImageDetailActivity.IMAGE, images.get(position).path);
+                    intent.putExtra(ImageDetailActivity.IMAGE, photos.get(position).path);
                     startActivity(intent);
                 }
             }
@@ -180,31 +150,27 @@ public class PhotoReportFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        View root = inflater.inflate(R.layout.report_fragment, container, false);
+        View root = inflater.inflate(R.layout.photo_report_fragment, container, false);
         gridView = (GridView) root.findViewById(R.id.gridView);
         Bundle bundle = getArguments();
         userId = bundle.getInt(MainActivity.USER_ID);
-        if (savedInstanceState != null) {
-            numSelected = savedInstanceState.getInt(NUM_SELECTED);
-            images = savedInstanceState.getParcelableArrayList(ADAPTER);
-            boolean withChecking = savedInstanceState.getBoolean(NEED_CONTEXT_BAR);
-            if (withChecking) {
-                longClick = true;
-                mActionMode = ((ActionBarActivity) getActivity())
-                        .startSupportActionMode(mActionModeCallback);
-                longClick = false;
-            }
-            setAdapter();
-        } else {
-            images = new ArrayList<Image>();
-        }
+        shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
+        client = (Client) bundle.getSerializable(ClientsListFragment.CLIENT_TAG);
+        photos = DatabaseApi.getInstance(getActivity()).getPhotos(client.id, userId, shop.id);
+        setAdapter();
         startAdapterGallery();
         return root;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.report, menu);
+        inflater.inflate(R.menu.photo_report, menu);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        DatabaseApi.getInstance(getActivity()).insertPhotos(photos, userId, client.id, shop.id);
     }
 
     @Override
@@ -228,34 +194,8 @@ public class PhotoReportFragment extends Fragment {
                         .startSupportActionMode(mActionModeCallback);
                 longClick = false;
                 return true;
-            case R.id.upload_button:
-                uploadReport();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void uploadReport() {
-        try {
-            if (images == null || images.size() == 0) {
-                Toast.makeText(getActivity(), R.string.have_no_photo, Toast.LENGTH_LONG).show();
-                return;
-            }
-            ArrayList<String> imagePaths = new ArrayList<String>();
-            for (Image image : images) {
-                imagePaths.add(image.path);
-            }
-            int shopId = getArguments().getInt(ShopsFragment.SHOP_ID);
-            int clientId = getArguments().getInt(ClientFragment.CLIENT_ID);
-            Response.Listener<String> listener = ((MainActivity) getActivity()).listener;
-            Response.ErrorListener errorListener = ((MainActivity) getActivity()).errorListener;
-            Request request = new MultiformRequest(userId, shopId, clientId, listener, errorListener, imagePaths);
-            ServerApi.getInstance(getActivity()).getQueue().add(request);
-            ((MainActivity)getActivity()).setSupportProgressBarIndeterminateVisibility(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), R.string.error_sending_report, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -273,22 +213,22 @@ public class PhotoReportFragment extends Fragment {
         } else {
             return null;
         }
-        images.add(new Image(mediaFile.getPath()));
+        photos.add(new Photo(mediaFile.getPath()));
         return mediaFile;
     }
 
     public void delSelected() {
-        Image image;
-        for (int i = images.size() - 1; i >= 0; --i) {
-            image = images.get(i);
-            if (image.checked) {
+        Photo photo;
+        for (int i = photos.size() - 1; i >= 0; --i) {
+            photo = photos.get(i);
+            if (photo.checked) {
                 try {
-                    File file = new File(image.path);
+                    File file = new File(photo.path);
                     file.delete();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                images.remove(i);
+                photos.remove(i);
             }
         }
         setAdapter();
@@ -308,50 +248,4 @@ public class PhotoReportFragment extends Fragment {
 
     }
 
-    public static class Image implements Parcelable {
-        public String path;
-        public Bitmap image;
-        boolean checked;
-
-        public Image(String path) {
-            this.path = path;
-        }
-
-        public static final Parcelable.Creator<Image> CREATOR;
-
-        static {
-            CREATOR = new Creator<Image>() {
-
-                @Override
-                public Image createFromParcel(Parcel source) {
-                    return new Image(source);
-                }
-
-                @Override
-                public Image[] newArray(int size) {
-                    return new Image[size];
-                }
-            };
-        }
-
-        private Image(Parcel in) {
-            readFromParcel(in);
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeByte((byte) (checked ? 1 : 0));
-            dest.writeString(path);
-        }
-
-        private void readFromParcel(Parcel in) {
-            checked = in.readByte() != 0;
-            path = in.readString();
-        }
-    }
 }

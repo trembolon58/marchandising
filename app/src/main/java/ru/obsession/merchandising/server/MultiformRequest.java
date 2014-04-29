@@ -1,7 +1,13 @@
 package ru.obsession.merchandising.server;
 
-import com.android.volley.*;
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
+
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -10,24 +16,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+
+import ru.obsession.merchandising.report.Photo;
 
 
 public class MultiformRequest extends Request<String> {
     private MultipartEntity entity = new MultipartEntity();
     private final Response.Listener<String> mListener;
-    private final ArrayList<File> photos;
+    private final File photo;
 
 
-    public MultiformRequest(int useerID, int shopId, int clientId, Response.Listener<String> listener, Response.ErrorListener errorListener,
-                            ArrayList<String> photos) {
+    public MultiformRequest(Response.Listener<String> listener, Response.ErrorListener errorListener,
+                            Photo photo) {
         super(Method.POST, ServerApi.LOGIN_URL, errorListener);
-        this.photos = new ArrayList<File>();
         mListener = listener;
         try {
-            String sId = String.valueOf(useerID);
-            String sSopId = String.valueOf(shopId);
-            String sClientId = String.valueOf(clientId);
+            String sId = String.valueOf(photo.userId);
+            String sSopId = String.valueOf(photo.shopId);
+            String sClientId = String.valueOf(photo.clientId);
             entity.addPart("type", new StringBody("client_report"));
             entity.addPart("user_id", new StringBody(sId));
             entity.addPart("shop_id", new StringBody(sSopId));
@@ -37,22 +43,16 @@ public class MultiformRequest extends Request<String> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (photos != null && photos.size() != 0) {
-            for (String photo : photos) {
-                this.photos.add(new File(photo));
-            }
+            this.photo = new File(photo.path);
             setTag("tag");
             buildMultipartEntity();
-        }
     }
 
     /**
      * добавляет фотографии в форму
      */
     private void buildMultipartEntity() {
-        for (int i = 0; i < photos.size(); i++) {
-            entity.addPart("pictures[" + i + "]", new FileBody(photos.get(i)));
-        }
+            entity.addPart("pictures[0]", new FileBody(photo));
     }
 
     /**

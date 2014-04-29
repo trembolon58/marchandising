@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ServerApi {
-    public static final String LOGIN_URL = "http://wap.bolife.ru/api/";
+    public static final String LOGIN_URL = "http://192.168.0.5//";
     private static final String MD5_KEY = "noob_team";
     private static volatile ServerApi serverApi;
 
@@ -53,114 +53,7 @@ public class ServerApi {
                 return mapObject;
             }
         };
-        cancelAll();
-        queue.add(getRequest);
-    }
-    private void cancelAll(){
-        queue.cancelAll(new RequestQueue.RequestFilter() {
-            @Override
-            public boolean apply(Request<?> request) {
-                return request.getTag() == null;
-            }
-        });
-    }
-    public void getShops(final int id, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "get_shops");
-                mapObject.put("user_id", String.valueOf(id));
-                mapObject.put("hash", md5("get_shops" + String.valueOf(id)));
-                return mapObject;
-            }
-        };
-        cancelAll();
-        queue.add(getRequest);
-    }
-    public void getShopsNet(Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "chain_store");
-                mapObject.put("hash", md5("chain_store"));
-                return mapObject;
-            }
-        };
-        cancelAll();
-        queue.add(getRequest);
-    }
 
-    public void getClients(final int id, final int shopId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "get_clients");
-                mapObject.put("user_id", String.valueOf(id));
-                mapObject.put("shop_id", String.valueOf(shopId));
-                mapObject.put("hash", md5("get_clients" + String.valueOf(id) + String.valueOf(shopId)));
-                return mapObject;
-            }
-        };
-        cancelAll();
-        queue.add(getRequest);
-    }
-
-    public void rearyReports(final int id, final int shopId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "ready_reports");
-                mapObject.put("user_id", String.valueOf(id));
-                mapObject.put("shop_id", String.valueOf(shopId));
-                mapObject.put("hash", md5("ready_reports" + String.valueOf(id) + String.valueOf(shopId)));
-                return mapObject;
-            }
-        };
-        cancelAll();
-        queue.add(getRequest);
-    }
-
-    public void getWorks(final int id, final int shopId, final int clientId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "get_works");
-                mapObject.put("user_id", String.valueOf(id));
-                mapObject.put("shop_id", String.valueOf(shopId));
-                mapObject.put("client_id", String.valueOf(clientId));
-                mapObject.put("hash", md5("get_works" + String.valueOf(id) + String.valueOf(shopId) + String.valueOf(clientId)));
-                return mapObject;
-            }
-        };
-        cancelAll();
-        queue.add(getRequest);
-    }
-
-    public void getShopsByAdress(final int id, final String chainName, final String adress, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "shop_by_address");
-                mapObject.put("user_id", String.valueOf(id));
-                mapObject.put("chain_name", chainName);
-                mapObject.put("part_address", adress);
-                mapObject.put("hash", md5("shop_by_address" + chainName + adress + String.valueOf(id)));
-                return mapObject;
-            }
-        };
-        cancelAll();
         queue.add(getRequest);
     }
 
@@ -176,7 +69,6 @@ public class ServerApi {
                 return mapObject;
             }
         };
-        cancelAll();
         queue.add(getRequest);
     }
 
@@ -197,66 +89,9 @@ public class ServerApi {
                 return mapObject;
             }
         };
-        cancelAll();
         queue.add(getRequest);
     }
-    public void sendGroupDangling(final int id, final int shopId, final JSONArray array,
-                                  Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "group_");
-                mapObject.put("user_id", String.valueOf(id));
-                mapObject.put("shop_id", String.valueOf(shopId));
-                mapObject.put("settings", array.toString());
-                mapObject.put("sub", "dangling");
-                mapObject.put("hash", md5("group_dangling" + String.valueOf(id) + String.valueOf(shopId)));
-                return mapObject;
-            }
-        };
-        cancelAll();
-        queue.add(getRequest);
-    }
-    public void sendGroupReturn(final int id, final int shopId, final JSONArray array,
-                                  Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "group_");
-                mapObject.put("user_id", String.valueOf(id));
-                mapObject.put("shop_id", String.valueOf(shopId));
-                mapObject.put("settings", array.toString());
-                mapObject.put("sub", "return");
-                mapObject.put("hash", md5("group_return" + String.valueOf(id) + String.valueOf(shopId)));
-                return mapObject;
-            }
-        };
-        cancelAll();
-        queue.add(getRequest);
-    }
-    public void sendGroupExchange(final int id, final int shopId, final JSONArray array,
-                                  Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
-                responseListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "group_");
-                mapObject.put("user_id", String.valueOf(id));
-                mapObject.put("shop_id", String.valueOf(shopId));
-                mapObject.put("settings", array.toString());
-                mapObject.put("sub", "exchange");
-                mapObject.put("hash", md5("group_exchange" + String.valueOf(id) + String.valueOf(shopId)));
-                return mapObject;
-            }
-        };
-        cancelAll();
-        queue.add(getRequest);
-    }
+
     public void sendOrder(final int id, final int shopId, final JSONArray array, final String dateOrder, final String timeDone,
                                 Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
@@ -274,7 +109,6 @@ public class ServerApi {
                 return mapObject;
             }
         };
-        cancelAll();
         queue.add(getRequest);
     }
     public void testAcsess(final int id, final String password, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
@@ -290,26 +124,85 @@ public class ServerApi {
                 return mapObject;
             }
         };
-        cancelAll();
         queue.add(getRequest);
     }
 
-
-    public void getAccortiment(final int shopId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+    public void testNewDb(final int userId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
                 responseListener, errorListener) {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "get_assortment");
-                mapObject.put("shop_id", String.valueOf(shopId));
-                mapObject.put("hash", md5("get_assortment" + String.valueOf(shopId)));
+                mapObject.put("type", "test_new_db");
+                mapObject.put("user_id", String.valueOf(userId));
+                mapObject.put("hash", md5("test_new_db"));
                 return mapObject;
             }
         };
-        cancelAll();
         queue.add(getRequest);
     }
+
+    public void getAllTAsks(Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "get_all");
+                mapObject.put("hash", md5("get_all"));
+                return mapObject;
+            }
+        };
+        queue.add(getRequest);
+    }
+
+    public void testPermision(final int userId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "on_a_plan");
+                mapObject.put("merch_id", String.valueOf(userId));
+                mapObject.put("hash", md5("on_a_plan"));
+                return mapObject;
+            }
+        };
+        queue.add(getRequest);
+    }
+
+    public void getMessages(final int userId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "get_user_msg");
+                mapObject.put("merch_id", String.valueOf(userId));
+                mapObject.put("get_code", "0");
+                mapObject.put("hash", md5("get_user_msg" + String.valueOf(userId) + "0"));
+                return mapObject;
+            }
+        };
+        queue.add(getRequest);
+    }
+
+    public void getTasks(final int userId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "on_a_plan");
+                mapObject.put("merch_id", String.valueOf(userId));
+                mapObject.put("get_code", "0");
+                mapObject.put("hash", md5("on_a_plan" + String.valueOf(userId) + "0"));
+                return mapObject;
+            }
+        };
+        queue.add(getRequest);
+    }
+
     public static String md5(String s) {
         s = MD5_KEY + s;
         try {

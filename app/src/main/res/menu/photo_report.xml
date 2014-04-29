@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:application="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/del_button"
+        android:icon="@drawable/del_icon"
+        android:title="@string/delete"
+        application:showAsAction="always"/>
+    <item android:id="@+id/photo_button"
+        android:icon="@drawable/camera_icon"
+        android:title="@string/make_photo"
+        application:showAsAction="always"/>
+</menu>
