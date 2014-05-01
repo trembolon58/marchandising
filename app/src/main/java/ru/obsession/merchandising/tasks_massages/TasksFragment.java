@@ -16,6 +16,11 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import ru.obsession.merchandising.R;
 import ru.obsession.merchandising.main.MainActivity;
 import ru.obsession.merchandising.server.ServerApi;
@@ -23,13 +28,30 @@ import ru.obsession.merchandising.server.ServerApi;
 public class TasksFragment extends Fragment {
 
     private ListView listView;
+    private int userId;
     private Response.Listener<String> listener = new Response.Listener<String>() {
         @Override
         public void onResponse(String s) {
             try {
+                ArrayList<Task> tasks = new ArrayList<Task>();
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setSupportProgressBarIndeterminateVisibility(false);
-                Toast.makeText(mainActivity, R.string.requests_error, Toast.LENGTH_LONG).show();
+                JSONArray jsonArray = new JSONArray(s);
+                for (int i = 0; i < jsonArray.length(); ++i) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    Task task = new Task();
+                    task.getDate(jsonObject.getString("date"));
+                    task.text = jsonObject.getString("text");
+                    task.statusCode = jsonObject.getInt("response");
+                    task.id = jsonObject.getInt("id");
+                    if (task.statusCode == Task.TAKED) {
+                        task.status = getString(R.string.taked);
+                    } else if (task.statusCode == Task.REFUSED) {
+                        task.status = getString(R.string.refused);
+                    }
+                    tasks.add(task);
+                }
+                listView.setAdapter(new TaskAdapter(mainActivity, tasks, userId));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -54,7 +76,9 @@ public class TasksFragment extends Fragment {
         View root = inflater.inflate(R.layout.list_view_fragment, container, false);
         listView = (ListView) root.findViewById(R.id.listView);
         listView.setClickable(false);
-        listView.setItemsCanFocus(true);
+        SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+        userId = preferences.getInt(MainActivity.USER_ID, -1);
+        listView.setSelector(android.R.color.transparent);
         refresh();
         return root;
     }
@@ -68,7 +92,7 @@ public class TasksFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_refresh:
+            case R.id.refresh:
                 refresh();
                 return true;
         }
@@ -81,6 +105,7 @@ public class TasksFragment extends Fragment {
         SharedPreferences preferences =
                 activity.getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
         int userId = preferences.getInt(MainActivity.USER_ID, -1);
-        ServerApi.getInstance(getActivity()).getTasks(userId,listener, errorListener);
+        listView.setAdapter(null);
+        ServerApi.getInstance(getActivity()).getTasks(userId, listener, errorListener);
     }
 }

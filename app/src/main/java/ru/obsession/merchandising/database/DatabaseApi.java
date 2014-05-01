@@ -212,7 +212,7 @@ public class DatabaseApi {
                 Shop shop = new Shop();
                 shop.id = cursor.getInt(cursor.getColumnIndex("shop_id"));
                 shop.name = cursor.getString(cursor.getColumnIndex("name"));
-                shop.needOrder = cursor.getInt(cursor.getColumnIndex("need_order")) == 1;
+             //   shop.needOrder = cursor.getInt(cursor.getColumnIndex("need_order")) == 1;
                 shop.address = cursor.getString(cursor.getColumnIndex("shop_address"));
                 shops.add(shop);
             }

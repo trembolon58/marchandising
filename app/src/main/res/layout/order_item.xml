@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="right" />
 
     <TextView
         android:id="@+id/textName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/checkBox"
         android:padding="@dimen/dp4"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -16,32 +26,20 @@
         android:id="@+id/textDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textName"
+        android:layout_toLeftOf="@+id/checkBox"
         android:padding="@dimen/dp4" />
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="fill_parent"
+    <EditText
+        android:id="@+id/textNumberOrder"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp4">
+        android:layout_below="@+id/textDescription"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="@string/numberOrder"
+        android:inputType="text"
+        android:singleLine="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textCount"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/textCount"
-            android:text="@string/num" />
-
-        <EditText
-            android:id="@+id/textCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            android:singleLine="true" />
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

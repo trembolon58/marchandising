@@ -16,6 +16,11 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import ru.obsession.merchandising.R;
 import ru.obsession.merchandising.main.MainActivity;
 import ru.obsession.merchandising.server.ServerApi;
@@ -27,9 +32,18 @@ public class MessagesFragment extends Fragment {
         @Override
         public void onResponse(String s) {
             try {
+                ArrayList<Message> messages = new ArrayList<Message>();
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setSupportProgressBarIndeterminateVisibility(false);
-                Toast.makeText(mainActivity, R.string.requests_error, Toast.LENGTH_LONG).show();
+                JSONArray jsonArray = new JSONArray(s);
+                for (int i = 0; i < jsonArray.length(); ++i) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    Message message = new Message();
+                    message.getDate(jsonObject.getString("date"));
+                    message.text = jsonObject.getString("text");
+                    messages.add(message);
+                }
+                listView.setAdapter( new MessagesAdapter(getActivity(), messages));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -68,7 +82,7 @@ public class MessagesFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_refresh:
+            case R.id.refresh:
                 refresh();
                 return true;
         }
@@ -81,6 +95,7 @@ public class MessagesFragment extends Fragment {
         SharedPreferences preferences =
                 activity.getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
         int userId = preferences.getInt(MainActivity.USER_ID, -1);
+        listView.setAdapter(null);
         ServerApi.getInstance(getActivity()).getMessages(userId,listener, errorListener);
     }
 }

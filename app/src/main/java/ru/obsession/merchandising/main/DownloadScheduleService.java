@@ -1,12 +1,17 @@
 package ru.obsession.merchandising.main;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 
 import com.android.volley.Response;
@@ -26,27 +31,30 @@ import ru.obsession.merchandising.server.ServerApi;
 import ru.obsession.merchandising.shops.Shop;
 import ru.obsession.merchandising.works.Work;
 
-public class DownloadScheduleService extends IntentService {
+public class DownloadScheduleService extends Service {
 
     private static final String name = "DounloadScheduleService";
+    public static final int DOWNLOADED = 0;
+    private Messenger mClient;
+    static final int MSG_REGISTER_CLIENT = 1;
+    static final int MSG_UNREGISTER_CLIENT = 2;
+
+    final Messenger mMessenger = new Messenger(new IncomingHandler());
     private int id = 0;
 
-    public DownloadScheduleService() {
-        super(name);
-    }
-
     @Override
-    protected void onHandleIntent(final Intent intent) {
+    public IBinder onBind(final Intent intent) {
         ServerApi.getInstance(getApplicationContext()).getAllTAsks(new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 try {
-                    sendNotification(s);
                     parseJSON(s);
                     int dbVersion = intent.getIntExtra(MainActivity.DB_VERSION, -1);
                     SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
                     preferences.edit().putInt(MainActivity.DB_VERSION, dbVersion).commit();
                     sendNotification(getString(R.string.db_version_refreshed));
+                    sendMessageToUI();
+                    DownloadScheduleService.this.stopSelf();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -57,7 +65,16 @@ public class DownloadScheduleService extends IntentService {
                 sendNotification(getString(R.string.error_dounloading));
             }
         });
+        return mMessenger.getBinder();
+    }
 
+    private void sendMessageToUI() {
+        try {
+            mClient.send(Message.obtain(null, DOWNLOADED, 0, 0));
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void parseJSON(String s) throws JSONException {
@@ -130,5 +147,22 @@ public class DownloadScheduleService extends IntentService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, notificationCompat.build());
         id++;
+    }
+
+    class IncomingHandler extends Handler { // Handler of incoming messages from clients.
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_REGISTER_CLIENT:
+                    mClient = msg.replyTo;
+                    break;
+                case MSG_UNREGISTER_CLIENT:
+                    mClient = null;
+                    break;
+                default:
+                    super.handleMessage(msg);
+            }
+        }
     }
 }

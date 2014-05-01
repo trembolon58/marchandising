@@ -9,5 +9,6 @@ public class Shop implements Serializable {
     public boolean needOrder = true;
 
     public Shop() {
+        needOrder = true;
     }
 }

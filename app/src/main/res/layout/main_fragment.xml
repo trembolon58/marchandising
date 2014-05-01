@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:padding="16dp"
-    android:layout_gravity="center"
-    android:layout_height="wrap_content">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/buttonSchedule"
-        android:layout_width="match_parent"
-        android:padding="20dp"
-        android:layout_marginBottom="8dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="@string/by_schedule"
-        android:layout_alignParentLeft="true" />
+        android:layout_gravity="center"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/buttonCustom"
-        android:padding="20dp"
-        android:layout_marginBottom="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/customized_schedule"
-        android:layout_below="@+id/buttonSchedule"
-        android:layout_alignRight="@+id/buttonSchedule"
-        android:layout_alignParentLeft="true" />
+        <Button
+            android:id="@+id/buttonSchedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="8dp"
+            android:padding="20dp"
+            android:text="@string/by_schedule" />
 
-    <Button
-        android:id="@+id/buttonSpecialTascs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/special_tascs"
-        android:layout_below="@+id/buttonCustom"
-        android:layout_alignParentLeft="true" />
+        <Button
+            android:id="@+id/buttonCustom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignRight="@+id/buttonSchedule"
+            android:layout_below="@+id/buttonSchedule"
+            android:layout_marginBottom="8dp"
+            android:padding="20dp"
+            android:text="@string/customized_schedule" />
 
-    <Button
-        android:id="@+id/buttonMessages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:text="@string/messages"
-        android:layout_below="@+id/buttonSpecialTascs"
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
+        <Button
+            android:id="@+id/buttonSpecialTascs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/buttonCustom"
+            android:layout_marginBottom="8dp"
+            android:padding="20dp"
+            android:text="@string/special_tascs" />
+
+        <Button
+            android:id="@+id/buttonMessages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonSpecialTascs"
+            android:layout_centerHorizontal="true"
+            android:padding="20dp"
+            android:text="@string/messages" />
+    </RelativeLayout>
+</ScrollView>
