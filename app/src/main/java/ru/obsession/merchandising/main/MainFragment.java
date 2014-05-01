@@ -129,6 +129,7 @@ public class MainFragment extends Fragment {
                 WifiManager wifiManager = (WifiManager) getActivity().getSystemService(getActivity().WIFI_SERVICE);
                 if (wifiManager.isWifiEnabled()) {
                     Intent intent = new Intent(getActivity(), PhotoReportingService.class);
+                    intent.putExtra(PhotoReportingService.NEED_NOTIFY, true);
                     getActivity().startService(intent);
                 } else {
                     dialogAlertWifiEnable();

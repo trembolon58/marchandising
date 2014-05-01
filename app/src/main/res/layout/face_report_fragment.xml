@@ -6,9 +6,9 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:padding="@dimen/dp4"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp4">
 
         <EditText
             android:id="@+id/editIncounterTime"

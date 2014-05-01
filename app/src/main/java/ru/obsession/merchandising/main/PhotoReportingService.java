@@ -22,6 +22,7 @@ import ru.obsession.merchandising.server.ServerApi;
 
 public class PhotoReportingService extends IntentService {
     private static final String NAME = "photo_send_service";
+    public static final String NEED_NOTIFY = "need_nitify";
     private int id;
     private int allCount;
     private int sexCount;
@@ -37,9 +38,12 @@ public class PhotoReportingService extends IntentService {
         RequestQueue queue = ServerApi.getInstance(getApplicationContext()).getQueue();
      //   final DatabaseApi databaseApi = DatabaseApi.getInstance(getApplicationContext());
         ArrayList<Photo> photos = DatabaseApi.getInstance(getApplicationContext()).getPhotos();
+        boolean needNotify = intent.getBooleanExtra(PhotoReportingService.NEED_NOTIFY, false);
         allCount = photos.size();
         if (allCount == 0){
-            sendNotification(getString(R.string.have_no_photo));
+            if (needNotify) {
+                sendNotification(getString(R.string.have_no_photo));
+            }
             return;
         }
         for (final Photo photo : photos) {

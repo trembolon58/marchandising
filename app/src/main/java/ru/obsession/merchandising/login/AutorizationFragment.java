@@ -57,18 +57,26 @@ public class AutorizationFragment extends Fragment {
                         try {
                             SharedPreferences preferences = getActivity()
                                     .getSharedPreferences(MainActivity.PREFERENSES_NAME,getActivity().MODE_PRIVATE);
-                            SharedPreferences.Editor ed = preferences.edit();
-                            ed.putInt(MainActivity.USER_ID, Integer.valueOf(s));
-                            ed.commit();
-                            startProfile();
+                            try {
+                                SharedPreferences.Editor ed = preferences.edit();
+                                ed.putInt(MainActivity.USER_ID, Integer.valueOf(s));
+                                ed.commit();
+                                startProfile();
+                            } catch (IllegalArgumentException e) {
+                                Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+                            }
                         } catch (Exception e) {
-                            Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
                         }
                 }
             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
-                            Toast.makeText(getActivity(),volleyError.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                            try {
+                                Toast.makeText(getActivity(),volleyError.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                            }   catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
         }

@@ -43,13 +43,12 @@
         </service>
         <activity
             android:name="ru.obsession.merchandising.report.ImageDetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_image_detail">
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
         <activity
             android:name="ru.obsession.merchandising.help.HelpActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_image_detail">
+            android:label="@string/help">
         </activity>
         <service android:name=".main.PhotoReportingService"/>
         <service android:name=".main.DownloadScheduleService"/>

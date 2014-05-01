@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import ru.obsession.merchandising.R;
-import ru.obsession.merchandising.clients.Client;
-import ru.obsession.merchandising.clients.ClientsListFragment;
 import ru.obsession.merchandising.main.MainActivity;
 import ru.obsession.merchandising.report.FaceReportFragment;
 import ru.obsession.merchandising.report.OrderFragment;
@@ -21,9 +19,6 @@ import ru.obsession.merchandising.shops.ShopsListFragment;
 
 public class WorkFragment extends Fragment {
 
-    private Client client;
-    private Shop shop;
-    private int userId;
 
 
     @Override
@@ -31,9 +26,7 @@ public class WorkFragment extends Fragment {
         setHasOptionsMenu(true);
         View root = inflater.inflate(R.layout.work_fragment, container, false);
         Bundle bundle = getArguments();
-        shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
-        client = (Client) bundle.getSerializable(ClientsListFragment.CLIENT_TAG);
-        userId = bundle.getInt(MainActivity.USER_ID);
+        Shop shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
         Button photoReport = (Button) root.findViewById(R.id.buttonPhotoReport);
         photoReport.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -54,7 +47,7 @@ public class WorkFragment extends Fragment {
                 transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
             }
         });
-        Button order = (Button) root.findViewById( R.id.buttonReport);
+        Button order = (Button) root.findViewById( R.id.buttonOrder);
         if (! shop.needOrder ){
             order.setVisibility(View.GONE);
         } else {
@@ -62,6 +55,7 @@ public class WorkFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Fragment fragment = new OrderFragment();
+                    fragment.setArguments(getArguments());
                     getFragmentManager().beginTransaction().replace(R.id.container, fragment).addToBackStack("tag").commit();
                 }
             });

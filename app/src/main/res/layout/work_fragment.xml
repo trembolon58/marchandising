@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_gravity="center"
-    android:padding="16dp"
-    android:layout_height="wrap_content">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/buttonReport"
-        android:padding="20dp"
-        android:layout_marginBottom="8dp"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/report" />
+        android:layout_gravity="center"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/buttonPhotoReport"
-        android:padding="20dp"
-        android:layout_marginBottom="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/buttonReport"
-        android:layout_below="@+id/buttonReport"
-        android:text="@string/photo_report" />
+        <Button
+            android:id="@+id/buttonReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:padding="20dp"
+            android:text="@string/report" />
 
-    <Button
-        android:id="@+id/buttonOrder"
-        android:padding="20dp"
-        android:layout_marginBottom="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/buttonPhotoReport"
-        android:layout_below="@+id/buttonPhotoReport"
-        android:text="@string/order" />
-</RelativeLayout>
+        <Button
+            android:id="@+id/buttonPhotoReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/buttonReport"
+            android:layout_below="@+id/buttonReport"
+            android:layout_marginBottom="8dp"
+            android:padding="20dp"
+            android:text="@string/photo_report" />
+
+        <Button
+            android:id="@+id/buttonOrder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/buttonPhotoReport"
+            android:layout_below="@+id/buttonPhotoReport"
+            android:layout_marginBottom="8dp"
+            android:padding="20dp"
+            android:text="@string/order" />
+    </RelativeLayout>
+</ScrollView>

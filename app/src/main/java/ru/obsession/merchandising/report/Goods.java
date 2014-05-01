@@ -17,16 +17,8 @@ public class Goods implements Serializable {
     public String shopName;
     public String visyak;
     public String retured;
-
-    public Goods(int id, String name, String company, String weight, String format) {
-        this.name = name;
-        this.id = id;
-        nameCompany = name + " " + company;
-        description = format + " " + weight;
-        this.company = company;
-        this.weight = weight;
-        this.format = format;
-    }
+    public boolean needOrder;
+    public String orderNumber;
 
     public Goods (){}
 

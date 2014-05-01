@@ -193,10 +193,27 @@ public class ServerApi {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "on_a_plan");
+                mapObject.put("type", "get_user_msg");
                 mapObject.put("merch_id", String.valueOf(userId));
-                mapObject.put("get_code", "0");
-                mapObject.put("hash", md5("on_a_plan" + String.valueOf(userId) + "0"));
+                mapObject.put("get_code", "1");
+                mapObject.put("hash", md5("get_user_msg" + String.valueOf(userId) + "1"));
+                return mapObject;
+            }
+        };
+        queue.add(getRequest);
+    }
+
+    public void sendAnsver(final int userId, final int messageId, final int setCode, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+                responseListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> mapObject = new HashMap<String, String>();
+                mapObject.put("type", "set_user_msg");
+                mapObject.put("merch_id", String.valueOf(userId));
+                mapObject.put("id_msg", String.valueOf(messageId));
+                mapObject.put("set_code", String.valueOf(setCode));
+                mapObject.put("hash", md5("set_user_msg" + String.valueOf(messageId) + String.valueOf(setCode)));
                 return mapObject;
             }
         };

@@ -1,6 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:padding="8dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textMessage"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:paddingTop="@dimen/dp4"
+        android:layout_height="wrap_content"
+        android:id="@+id/textDate"
+        android:layout_below="@+id/textMessage"
+        android:layout_alignParentRight="true" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/containerControls"
+        android:gravity="center"
+        android:layout_below="@+id/textDate"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/take"
+            android:id="@+id/buttonTake"
+            android:layout_alignTop="@+id/buttonRefuse"
+            android:layout_alignParentLeft="true" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/refuse"
+            android:id="@+id/buttonRefuse"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/buttonTake" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/textStatus"
+        android:layout_below="@+id/textMessage"
+        android:layout_toLeftOf="@+id/textDate"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>
