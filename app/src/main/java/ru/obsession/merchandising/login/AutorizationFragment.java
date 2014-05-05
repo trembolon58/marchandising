@@ -84,6 +84,7 @@ public class AutorizationFragment extends Fragment {
 
     private void startProfile() {
         SyncUtils.CreateSyncAccount(getActivity(), name, password);
+        ((MainActivity) getActivity()).checkUpdate();
         Fragment fragment = new MainFragment();
         getFragmentManager().popBackStack();
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();

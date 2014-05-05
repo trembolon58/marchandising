@@ -39,7 +39,7 @@
         android:ems="10"
         android:enabled="false"
         android:hint="@string/numberOrder"
-        android:inputType="text"
+        android:inputType="numberDecimal"
         android:singleLine="true" />
 
 </RelativeLayout>

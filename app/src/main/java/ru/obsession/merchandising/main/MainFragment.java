@@ -94,7 +94,7 @@ public class MainFragment extends Fragment {
             }
         });
         Button messages = (Button) root.findViewById(R.id.buttonMessages);
-        messages.setOnClickListener( new View.OnClickListener() {
+        messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Fragment fragment = new MessagesFragment();

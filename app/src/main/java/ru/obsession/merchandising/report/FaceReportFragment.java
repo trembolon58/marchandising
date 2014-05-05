@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TimePicker;
@@ -32,19 +33,32 @@ import ru.obsession.merchandising.clients.Client;
 import ru.obsession.merchandising.clients.ClientsListFragment;
 import ru.obsession.merchandising.database.DatabaseApi;
 import ru.obsession.merchandising.main.MainActivity;
+import ru.obsession.merchandising.server.ServerApi;
 import ru.obsession.merchandising.shops.Shop;
 import ru.obsession.merchandising.shops.ShopsListFragment;
 
 public class FaceReportFragment extends Fragment {
 
     private ListView listView;
-    public ArrayList<Goods> goods;
+    public ArrayList<Goods> goodses;
     private int incountHour;
     private int incountMin;
     private Client client;
     private Shop shop;
     private int userId;
 
+    private Response.Listener<String> listener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String s) {
+            try {
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setSupportProgressBarIndeterminateVisibility(false);
+                Toast.makeText(mainActivity, R.string.report_sended, Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
     private Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
@@ -55,6 +69,7 @@ public class FaceReportFragment extends Fragment {
             }
         }
     };
+
     private EditText editIncomerTime;
 
     @Override
@@ -83,15 +98,17 @@ public class FaceReportFragment extends Fragment {
         shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
         client = (Client) bundle.getSerializable(ClientsListFragment.CLIENT_TAG);
         userId = bundle.getInt(MainActivity.USER_ID);
-        goods = DatabaseApi.getInstance(getActivity()).getAssortment(userId, client.id, shop);
-        listView.setAdapter( new FaceReportAdapter(getActivity(), goods));
+        MainActivity mainActivity = (MainActivity) getActivity();
+        goodses = DatabaseApi.getInstance(getActivity()).getAssortment(userId, client.id, shop, mainActivity.timeServer);
+        listView.setAdapter( new FaceReportAdapter(getActivity(), goodses));
         return root;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        DatabaseApi.getInstance(getActivity()).saveReport(goods, userId, client.id, shop.id);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        DatabaseApi.getInstance(getActivity()).saveReport(goodses, userId, client.id, shop, mainActivity.timeServer);
     }
 
     @Override
@@ -129,30 +146,51 @@ public class FaceReportFragment extends Fragment {
             case R.id.menu_done:
                 sendResult();
                 return true;
+            case R.id.menu_clear:
+                clear();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void clear() {
+        for (Goods goods : goodses) {
+            goods.returned = null;
+            goods.visyak = null;
+            goods.place = null;
+            goods.cost = null;
+            goods.faces = null;
+            goods.residue = null;
+        }
+        ((ArrayAdapter) listView.getAdapter()).notifyDataSetChanged();
+    }
+
     private void sendResult() {
         String inTime = String.valueOf(incountHour) + ":" + String.valueOf(incountMin);
-        String allFace = ((EditText) getView().findViewById(R.id.editAllFace)).getText().toString();
+        String allCount = ((EditText) getView().findViewById(R.id.editAllFace)).getText().toString();
         JSONArray jsonArray = createJSONArray();
-        if (jsonArray.length() == 0){
-            Toast.makeText(getActivity(),R.string.nothing_send,Toast.LENGTH_LONG).show();
+        if (jsonArray.length() == 0) {
+            Toast.makeText(getActivity(), R.string.nothing_send, Toast.LENGTH_LONG).show();
+        } else {
+            ServerApi.getInstance(getActivity()).sendFacesReport(userId, shop.id, allCount, jsonArray, inTime, listener, errorListener);
         }
     }
 
     private JSONArray createJSONArray() {
         JSONArray jsonArray = new JSONArray();
-        for (Goods good : goods) {
+        for (Goods good : goodses) {
                 JSONObject object = new JSONObject();
+            if (!good.isFiel()) {
+                continue;
+            }
                 try {
                     object.put("id", good.id);
                     object.put("price", good.cost);
-                    object.put("face_count", good.faces);
-                    object.put("shelf_residue", good.residue);
-                    object.put("additional_seat", good.place);
+                    object.put("count", good.faces);
+                    object.put("residue", good.residue);
+                    object.put("return", good.returned);
+                    object.put("dangling", good.visyak);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

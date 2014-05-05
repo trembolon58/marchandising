@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,14 +21,12 @@ import ru.obsession.merchandising.works.WorkFragment;
 public class ClientsListFragment extends Fragment {
 
     private ListView listView;
-    private ArrayList<Client> clients;
     public static final String CLIENT_TAG = "client_tag";
     private int userId;
     private Shop shop;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         View root = inflater.inflate(R.layout.list_view_fragment, container, false);
         Bundle bundle = getArguments();
         shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
@@ -52,26 +49,8 @@ public class ClientsListFragment extends Fragment {
     }
 
     private void refreshView() {
-        clients = DatabaseApi.getInstance(getActivity()).getClients(userId, shop.id);
+        ArrayList<Client> clients = DatabaseApi.getInstance(getActivity()).getClients(userId, shop.id);
         listView.setAdapter(new ClientAdapter(getActivity(), clients));
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment fragment;
-        FragmentTransaction transaction;
-        switch (item.getItemId()) {
-            case R.id.menu_refresh:
-                return true;
-       /*     case R.id.menu_report:
-                fragment = new ReportFragment();
-                fragment.setArguments(getArguments());
-                transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.container, fragment).addToBackStack("tag").commit();
-                return true;*/
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
 }

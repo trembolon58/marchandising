@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Goods implements Serializable {
     public String nameCompany;
+    public int clientId;
     public int id;
     public String description;
     public String name;
@@ -16,7 +17,7 @@ public class Goods implements Serializable {
     public String place;
     public String shopName;
     public String visyak;
-    public String retured;
+    public String returned;
     public boolean needOrder;
     public String orderNumber;
 
@@ -32,6 +33,6 @@ public class Goods implements Serializable {
     }
 
     boolean isFiel() {
-        return place != null && faces != null && cost != null && residue != null;
+        return visyak != null || faces != null || cost != null || returned != null;
     }
 }

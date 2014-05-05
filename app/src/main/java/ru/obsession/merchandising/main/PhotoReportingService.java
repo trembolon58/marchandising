@@ -23,34 +23,33 @@ import ru.obsession.merchandising.server.ServerApi;
 public class PhotoReportingService extends IntentService {
     private static final String NAME = "photo_send_service";
     public static final String NEED_NOTIFY = "need_nitify";
-    private int id;
     private int allCount;
     private int sexCount;
     private int errCount;
 
     public PhotoReportingService() {
         super(NAME);
-        id = 0;
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         RequestQueue queue = ServerApi.getInstance(getApplicationContext()).getQueue();
-     //   final DatabaseApi databaseApi = DatabaseApi.getInstance(getApplicationContext());
+        final DatabaseApi databaseApi = DatabaseApi.getInstance(getApplicationContext());
         ArrayList<Photo> photos = DatabaseApi.getInstance(getApplicationContext()).getPhotos();
         boolean needNotify = intent.getBooleanExtra(PhotoReportingService.NEED_NOTIFY, false);
         allCount = photos.size();
-        if (allCount == 0){
+        if (allCount == 0) {
             if (needNotify) {
                 sendNotification(getString(R.string.have_no_photo));
             }
             return;
         }
+        sendNotification(getString(R.string.photosendingisstarted));
         for (final Photo photo : photos) {
             MultiformRequest request = new MultiformRequest(new Response.Listener<String>() {
                 @Override
                 public void onResponse(String s) {
-                  //  databaseApi.removePhoto(photo);
+                    databaseApi.removePhoto(photo);
                     sexes();
                 }
             }, new Response.ErrorListener() {
@@ -66,7 +65,7 @@ public class PhotoReportingService extends IntentService {
     private void sexes() {
         try {
             ++sexCount;
-            if (sexCount + errCount == allCount) {
+            if (!isUploadingFinish()) {
                 sendNotification(getString(R.string.send_result, sexCount, allCount));
             }
         } catch (Exception e) {
@@ -77,12 +76,18 @@ public class PhotoReportingService extends IntentService {
     private void error() {
         try {
             ++errCount;
-            if (sexCount + errCount == allCount) {
-                sendNotification(getString(R.string.send_result, sexCount, allCount));
-            }
+            isUploadingFinish();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isUploadingFinish() {
+        if (sexCount + errCount == allCount) {
+            sendNotification(getString(R.string.uploading_finished) + " " + getString(R.string.send_result, sexCount, allCount));
+            return true;
+        }
+        return false;
     }
 
     private void sendNotification(String text) {
@@ -91,11 +96,10 @@ public class PhotoReportingService extends IntentService {
                 .setContentTitle(getString(R.string.sending_photo))
                 .setContentText(text)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setTicker(text);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, null, PendingIntent.FLAG_CANCEL_CURRENT);
-        notificationCompat.setContentIntent(pendingIntent);
+                .setTicker(text)
+                .setAutoCancel(true)
+                .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(), 0));
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(id, notificationCompat.build());
-        id++;
+        notificationManager.notify(1, notificationCompat.build());
     }
 }

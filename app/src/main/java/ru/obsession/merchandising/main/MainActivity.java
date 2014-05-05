@@ -24,6 +24,10 @@ import com.android.volley.VolleyError;
 
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import ru.obsession.merchandising.R;
 import ru.obsession.merchandising.help.HelpActivity;
 import ru.obsession.merchandising.login.AutorizationFragment;
@@ -37,11 +41,12 @@ public class MainActivity extends ActionBarActivity {
     public static final String DB_VERSION = "db_version";
     private static final String SERVER_TIME = "server_time";
     public static String USER_ID = "user_id";
-    public static int timeServer;
+    public int timeServer;
     private int dbVersion;
     Messenger mService = null;
     boolean mIsBound;
     final Messenger mMessenger = new Messenger(new IncomingHandler());
+    private int userId;
 
     class IncomingHandler extends Handler {
         @Override
@@ -50,8 +55,15 @@ public class MainActivity extends ActionBarActivity {
                 switch (msg.what) {
                     case DownloadScheduleService.DOWNLOADED:
                         doUnbindService();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+                            fragmentManager.popBackStack();
+                        }
+                        if (userId == -1) {
+                            return;
+                        }
                         Fragment fragment = new MainFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+                        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
                         break;
                     default:
                         super.handleMessage(msg);
@@ -61,6 +73,7 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
+
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mService = new Messenger(service);
@@ -85,24 +98,30 @@ public class MainActivity extends ActionBarActivity {
                 JSONObject jsonObject = new JSONObject(s);
                 timeServer = jsonObject.getInt("time");
                 SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
-                preferences.edit().putInt(SERVER_TIME, timeServer).commit();
+                dbVersion = preferences.getInt(DB_VERSION, -1);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putInt(SERVER_TIME, timeServer).commit();
                 int versionNew = jsonObject.getInt("db_ver");
-              //  if (dbVersion != versionNew) {
+                editor.putInt(DB_VERSION, versionNew).commit();
+          //      if (dbVersion != versionNew) {
                     Intent intent = new Intent(MainActivity.this, DownloadScheduleService.class);
-                    intent.putExtra(DB_VERSION, versionNew);
                     startService(intent);
-                    doBindService();
-              /*  } else {
+                    doBindService(dbVersion);
+            /*    } else {
                     Toast.makeText(MainActivity.this, R.string.actual_version, Toast.LENGTH_LONG).show();
                 }*/
+                showDate(MainActivity.this, timeServer);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
 
-    private void doBindService() {
-        bindService(new Intent(this, DownloadScheduleService.class), mConnection, Context.BIND_AUTO_CREATE);
+    private void doBindService(int versionNew) {
+        Intent intent = new Intent(this, DownloadScheduleService.class);
+        intent.putExtra(DB_VERSION, versionNew);
+        intent.putExtra(USER_ID, userId);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mIsBound = true;
     }
 
@@ -132,11 +151,25 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    public static void showDate(Context context, long timeStampStr) {
+
+        try {
+            DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date netDate = (new Date(timeStampStr * 1000));
+            String s = sdf.format(netDate);
+            s = context.getString(R.string.tasks_by_date) + " " + s;
+            Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
             try {
                 setSupportProgressBarIndeterminateVisibility(false);
+                showDate(MainActivity.this, timeServer);
                 Toast.makeText(MainActivity.this, R.string.requests_error, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -150,14 +183,13 @@ public class MainActivity extends ActionBarActivity {
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main);
         SharedPreferences preferences = getSharedPreferences(PREFERENSES_NAME, Context.MODE_PRIVATE);
-        int userId = preferences.getInt(MainActivity.USER_ID, -1);
-        dbVersion = preferences.getInt(MainActivity.DB_VERSION, -1);
-        timeServer = preferences.getInt(MainActivity.SERVER_TIME, -1);
-        checkUpdate();
+        userId = preferences.getInt(MainActivity.USER_ID, -1);
+        dbVersion = preferences.getInt(DB_VERSION, -1);
+        timeServer = preferences.getInt(SERVER_TIME, -1);
         if (userId == -1) {
             logOut();
         } else {
-            timeServer = preferences.getInt(MainActivity.SERVER_TIME, -1);
+            checkUpdate();
             Fragment fragment = new MainFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
         }
@@ -167,8 +199,8 @@ public class MainActivity extends ActionBarActivity {
     public void checkUpdate() {
         setSupportProgressBarIndeterminateVisibility(true);
         SharedPreferences preferences = getSharedPreferences(PREFERENSES_NAME, Context.MODE_PRIVATE);
-        int userId = preferences.getInt(MainActivity.USER_ID, -1);
-        dbVersion = preferences.getInt(MainActivity.DB_VERSION, -1);
+        int userId = preferences.getInt(USER_ID, -1);
+        dbVersion = preferences.getInt(DB_VERSION, -1);
         ServerApi.getInstance(getApplicationContext()).testNewDb(userId, listener, errorListener);
     }
 
@@ -203,7 +235,7 @@ public class MainActivity extends ActionBarActivity {
                 return true;
             case R.id.menu_refresh:
                 checkUpdate();
-                return false;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

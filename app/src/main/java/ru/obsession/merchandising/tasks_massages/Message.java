@@ -10,7 +10,7 @@ public class Message {
     public void getDate(String timeStampStr){
 
         try{
-            DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             Date netDate = (new Date(Long.parseLong(timeStampStr) * 1000));
             date = sdf.format(netDate);
         }

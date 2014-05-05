@@ -40,24 +40,30 @@ public class DownloadScheduleService extends Service {
     static final int MSG_UNREGISTER_CLIENT = 2;
 
     final Messenger mMessenger = new Messenger(new IncomingHandler());
-    private int id = 0;
 
     @Override
-    public IBinder onBind(final Intent intent) {
-        ServerApi.getInstance(getApplicationContext()).getAllTAsks(new Response.Listener<String>() {
+    public IBinder onBind(Intent intent) {
+        int userId = intent.getIntExtra(MainActivity.USER_ID, -1);
+        final int dbVersion = intent.getIntExtra(MainActivity.DB_VERSION, -1);
+        ServerApi.getInstance(getApplicationContext()).getAllTAsks(userId, new Response.Listener<String>() {
             @Override
-            public void onResponse(String s) {
-                try {
-                    parseJSON(s);
-                    int dbVersion = intent.getIntExtra(MainActivity.DB_VERSION, -1);
-                    SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
-                    preferences.edit().putInt(MainActivity.DB_VERSION, dbVersion).commit();
-                    sendNotification(getString(R.string.db_version_refreshed));
-                    sendMessageToUI();
-                    DownloadScheduleService.this.stopSelf();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            public void onResponse(final String s) {
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            parseJSON(s);
+                            SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+                            preferences.edit().putInt(MainActivity.DB_VERSION, dbVersion).commit();
+                            sendNotification(getString(R.string.db_version_refreshed));
+                            sendMessageToUI();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                thread.start();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -76,6 +82,7 @@ public class DownloadScheduleService extends Service {
             e.printStackTrace();
         }
     }
+
 
     private void parseJSON(String s) throws JSONException {
 
@@ -102,7 +109,6 @@ public class DownloadScheduleService extends Service {
         for (int i = 0; i < array.length(); ++i) {
             JSONObject jsonObject = array.getJSONObject(i);
             Client client = new Client();
-            client.phone = jsonObject.getString("phone");
             client.id = jsonObject.getInt("id");
             client.name = jsonObject.getString("name");
             clients.add(client);
@@ -115,6 +121,7 @@ public class DownloadScheduleService extends Service {
             shop.address = jsonObject.getString("address");
             shop.id = jsonObject.getInt("id");
             shop.name = jsonObject.getString("name");
+            shop.needOrder = jsonObject.getInt("need_order") != 0;
             shops.add(shop);
         }
 
@@ -129,6 +136,7 @@ public class DownloadScheduleService extends Service {
             goodsItem.weight = jsonObject.getString("weight");
             goodsItem.id = jsonObject.getInt("id");
             goodsItem.name = jsonObject.getString("name");
+            goodsItem.clientId = jsonObject.getInt("client");
             goodsItem.calcDescription();
             goods.add(goodsItem);
         }
@@ -141,15 +149,14 @@ public class DownloadScheduleService extends Service {
                 .setContentTitle(getString(R.string.db_refresh))
                 .setContentText(text)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setTicker(text);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, null, PendingIntent.FLAG_CANCEL_CURRENT);
-        notificationCompat.setContentIntent(pendingIntent);
+                .setTicker(text)
+                .setAutoCancel(true)
+                .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(), 0));
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(id, notificationCompat.build());
-        id++;
+        notificationManager.notify(0, notificationCompat.build());
     }
 
-    class IncomingHandler extends Handler { // Handler of incoming messages from clients.
+    class IncomingHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
@@ -158,6 +165,7 @@ public class DownloadScheduleService extends Service {
                     mClient = msg.replyTo;
                     break;
                 case MSG_UNREGISTER_CLIENT:
+                    stopSelf();
                     mClient = null;
                     break;
                 default:
