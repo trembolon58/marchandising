@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import ru.obsession.merchandising.R;
+import ru.obsession.merchandising.clients.Client;
+import ru.obsession.merchandising.clients.ClientsListFragment;
+import ru.obsession.merchandising.database.DatabaseApi;
 import ru.obsession.merchandising.main.MainActivity;
 import ru.obsession.merchandising.report.FaceReportFragment;
 import ru.obsession.merchandising.report.OrderFragment;
@@ -19,14 +22,21 @@ import ru.obsession.merchandising.shops.ShopsListFragment;
 
 public class WorkFragment extends Fragment {
 
-
+    private Client client;
+    private Shop shop;
+    private int userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setSupportProgressBarIndeterminateVisibility(false);
         View root = inflater.inflate(R.layout.work_fragment, container, false);
         Bundle bundle = getArguments();
-        Shop shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
+        shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
+        client = (Client) bundle.getSerializable(ClientsListFragment.CLIENT_TAG);
+        userId = bundle.getInt(MainActivity.USER_ID);
+        mainActivity.timeServer = DatabaseApi.getInstance(mainActivity).getWorkTime(userId, client.id,shop, mainActivity.timeServer);
         Button photoReport = (Button) root.findViewById(R.id.buttonPhotoReport);
         photoReport.setOnClickListener( new View.OnClickListener() {
             @Override

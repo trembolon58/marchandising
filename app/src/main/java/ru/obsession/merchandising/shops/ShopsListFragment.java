@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,7 +29,6 @@ public class ShopsListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         View root = inflater.inflate(R.layout.list_view_fragment, container, false);
         listView = (ListView) root.findViewById(R.id.listView);
         listView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
@@ -59,23 +57,13 @@ public class ShopsListFragment extends Fragment {
     private void refreshView() {
         Bundle bundle = getArguments();
         String type = bundle.getString(TYPE);
-   //     if (type.equals(ALL)) {
+        if (type.equals(ALL)) {
             shops = DatabaseApi.getInstance(getActivity()).getAllShops(userId);
-  /*      } else {
-            shops = DatabaseApi.getInstance(getActivity()).getDayShops(userId, MainActivity.timeServer);
-        }*/
+        } else {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            shops = DatabaseApi.getInstance(getActivity()).getDayShops(userId, mainActivity.timeServer);
+        }
         listView.setAdapter(new ShopsAdapter(getActivity(), shops));
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_refresh:
-                refreshView();
-                return false;
-            default:
-            return super.onOptionsItemSelected(item);
-        }
     }
 }

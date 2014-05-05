@@ -27,7 +27,19 @@
     [phone] [VARCHAR(50)],
     [client_id] INTEGER KEY);
 
+  CREATE TABLE [orders] (
+      [date] INTEGER,
+      [id] INTEGER PRIMARY KEY AUTOINCREMENT,
+      [goods_id] INTEGER,
+      [user_id] INTEGER DEFAULT -1,
+      [client_id] INTEGER DEFAULT -1,
+      [shop_id] INTEGER DEFAULT -1,
+      [shop_name] [VARCHAR(50)],
+      [need_order] INTEGER,
+      [order_number] INTEGER);
+
   CREATE TABLE [goods] (
+    [date] INTEGER,
     [id] INTEGER PRIMARY KEY AUTOINCREMENT,
     [goods_id] INTEGER,
     [shop_name] [VARCHAR(50)],

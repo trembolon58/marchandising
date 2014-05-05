@@ -52,7 +52,7 @@ public class MultiformRequest extends Request<String> {
      * добавляет фотографии в форму
      */
     private void buildMultipartEntity() {
-            entity.addPart("pictures[0]", new FileBody(photo));
+            entity.addPart("pictures", new FileBody(photo));
     }
 
     /**

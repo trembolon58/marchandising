@@ -1,6 +1,7 @@
 package ru.obsession.merchandising.server;
 
 import android.content.Context;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ServerApi {
-    public static final String LOGIN_URL = "http://192.168.0.5//";
+    public static final String LOGIN_URL = "http://wap.bolife.ru/api/";
     private static final String MD5_KEY = "noob_team";
     private static volatile ServerApi serverApi;
 
@@ -72,40 +73,38 @@ public class ServerApi {
         queue.add(getRequest);
     }
 
-    public void sendFacesReport(final int id, final int shopId, final JSONArray array, final String timeArrival, final String timeDeparture,
+    public void sendFacesReport(final int id, final int shopId, final String allfaces, final JSONArray array, final String timeArrival,
                                 Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
                 responseListener, errorListener) {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "assortment_report");
+                mapObject.put("type", "global_report");
                 mapObject.put("user_id", String.valueOf(id));
                 mapObject.put("shop_id", String.valueOf(shopId));
+                mapObject.put("all_faces", allfaces);
                 mapObject.put("items", array.toString());
                 mapObject.put("date_arrival", timeArrival);
-                mapObject.put("date_departure", timeDeparture);
-                mapObject.put("hash", md5("assortment_report" + String.valueOf(id) + String.valueOf(shopId)));
+                mapObject.put("hash", md5("global_report" + String.valueOf(id) + String.valueOf(shopId)));
                 return mapObject;
             }
         };
         queue.add(getRequest);
     }
 
-    public void sendOrder(final int id, final int shopId, final JSONArray array, final String dateOrder, final String timeDone,
+    public void sendOrder(final int id, final int shopId, final JSONArray array,
                                 Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
                 responseListener, errorListener) {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> mapObject = new HashMap<String, String>();
-                mapObject.put("type", "send_order");
+                mapObject.put("type", "order_report");
                 mapObject.put("user_id", String.valueOf(id));
                 mapObject.put("shop_id", String.valueOf(shopId));
-                mapObject.put("date_order", dateOrder);
-                mapObject.put("items", array.toString());
-                mapObject.put("date_receipt", timeDone);
-                mapObject.put("hash", md5("send_order" + String.valueOf(id) + String.valueOf(shopId)));
+                mapObject.put("assortments", array.toString());
+                mapObject.put("hash", md5("order_report" + String.valueOf(id) + String.valueOf(shopId)));
                 return mapObject;
             }
         };
@@ -134,21 +133,22 @@ public class ServerApi {
             protected Map<String, String> getParams() {
                 HashMap<String, String> mapObject = new HashMap<String, String>();
                 mapObject.put("type", "test_new_db");
-                mapObject.put("user_id", String.valueOf(userId));
-                mapObject.put("hash", md5("test_new_db"));
+                mapObject.put("merch_id", String.valueOf(userId));
+                mapObject.put("hash", md5("test_new_db" + String.valueOf(userId)));
                 return mapObject;
             }
         };
         queue.add(getRequest);
     }
 
-    public void getAllTAsks(Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+    public void getAllTAsks(final int userId, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         StringRequest getRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
                 responseListener, errorListener) {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> mapObject = new HashMap<String, String>();
                 mapObject.put("type", "get_all");
+                mapObject.put("user_id", String.valueOf(userId));
                 mapObject.put("hash", md5("get_all"));
                 return mapObject;
             }

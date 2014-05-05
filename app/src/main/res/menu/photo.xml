@@ -2,8 +2,9 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/upload_button"
-        android:title="@string/send_photo"
+    <item
+        android:id="@+id/upload_button"
         android:icon="@drawable/ic_report"
-        app:showAsAction="always"/>
+        android:title="@string/send_photo"
+        app:showAsAction="always" />
 </menu>

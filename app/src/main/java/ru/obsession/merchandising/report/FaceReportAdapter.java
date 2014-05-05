@@ -75,7 +75,7 @@ public class FaceReportAdapter extends ArrayAdapter<Goods> {
                 }
             }
         });
-        holder.textVisyak.setText(goods.place);
+        holder.textVisyak.setText(goods.visyak);
         holder.textVisyak.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus){
@@ -83,11 +83,11 @@ public class FaceReportAdapter extends ArrayAdapter<Goods> {
                 }
             }
         });
-        holder.textExchange.setText(goods.place);
+        holder.textExchange.setText(goods.returned);
         holder.textExchange.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus){
-                    goods.retured = holder.textExchange.getText().toString();
+                    goods.returned = holder.textExchange.getText().toString();
                 }
             }
         });

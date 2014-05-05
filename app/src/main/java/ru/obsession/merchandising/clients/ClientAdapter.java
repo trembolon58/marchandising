@@ -21,7 +21,6 @@ public class ClientAdapter extends ArrayAdapter<Client> {
 
     public static class ViewHolder {
         TextView name;
-        TextView phone;
     }
 
     @Override
@@ -31,14 +30,12 @@ public class ClientAdapter extends ArrayAdapter<Client> {
             holder = new ViewHolder();
             v = lInflater.inflate(R.layout.client_item, null);
             holder.name = (TextView) v.findViewById(R.id.textName);
-            holder.phone = (TextView) v.findViewById(R.id.textPhone);
             v.setTag(holder);
         } else {
             holder = (ViewHolder) v.getTag();
         }
         Client client = getItem(position);
         holder.name.setText(client.name);
-        holder.phone.setText(client.phone);
         return v;
     }
 }
