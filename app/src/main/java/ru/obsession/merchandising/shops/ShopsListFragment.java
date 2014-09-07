@@ -44,7 +44,7 @@ public class ShopsListFragment extends Fragment {
             }
         });
         SharedPreferences preferences = getActivity()
-                .getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+                .getSharedPreferences(MainActivity.PREFERENCES_NAME, Context.MODE_PRIVATE);
         userId = preferences.getInt(MainActivity.USER_ID, -1);
         if (userId == -1) {
             ((MainActivity) getActivity()).logOut();

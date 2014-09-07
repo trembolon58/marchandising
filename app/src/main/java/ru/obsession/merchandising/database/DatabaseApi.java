@@ -149,7 +149,7 @@ public class DatabaseApi {
         if (cursor.getCount() == 0) {
             cursor.close();
             cursor = db.rawQuery("SELECT * FROM goods" +
-                    " WHERE goods.shop_name = '" + shop.name +
+                    " WHERE goods.shop_name = '" + shop.name.toLowerCase() +
                     "' AND goods.client_id = " + String.valueOf(clientId) +
                     " AND goods.user_id = -1", null);
         }
@@ -312,10 +312,10 @@ public class DatabaseApi {
                 " GROUP BY orders.goods_id"), null);
         if (cursor.getCount() == 0) {
             cursor.close();
-            cursor = db.rawQuery("SELECT * FROM goods" +
-                    " WHERE goods.shop_name = '" + shop.name +
+            cursor = db.rawQuery("SELECT * FROM goods " +
+                    " WHERE goods.shop_name = '" + shop.name.toLowerCase() +
                     "' AND goods.client_id = " + String.valueOf(clientId) +
-                    " AND goods.user_id = -1", null);
+                    " AND goods.user_id = -1 ", null);
             parseAssortmenteCursor(goodses, cursor);
             cursor.close();
             return goodses;
@@ -345,9 +345,9 @@ public class DatabaseApi {
         int out = date;
         Cursor cursor = db.rawQuery("SELECT [date] FROM works " +
                 "WHERE works.date >= " + String.valueOf(date) +
-                        " AND works.user_id = " + String.valueOf(userId) +
-                        " AND works.shop_id = " + String.valueOf(shop.id) +
-                        " AND works.client_id = " + String.valueOf(clientId) +
+                " AND works.user_id = " + String.valueOf(userId) +
+                " AND works.shop_id = " + String.valueOf(shop.id) +
+                " AND works.client_id = " + String.valueOf(clientId) +
                 " LIMIT 1", null);
         if (cursor.getCount() == 0) {
             while (cursor.moveToNext()) {
