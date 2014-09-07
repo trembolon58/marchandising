@@ -22,10 +22,6 @@ import ru.obsession.merchandising.shops.ShopsListFragment;
 
 public class WorkFragment extends Fragment {
 
-    private Client client;
-    private Shop shop;
-    private int userId;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -33,10 +29,10 @@ public class WorkFragment extends Fragment {
         mainActivity.setSupportProgressBarIndeterminateVisibility(false);
         View root = inflater.inflate(R.layout.work_fragment, container, false);
         Bundle bundle = getArguments();
-        shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
-        client = (Client) bundle.getSerializable(ClientsListFragment.CLIENT_TAG);
-        userId = bundle.getInt(MainActivity.USER_ID);
-        mainActivity.timeServer = DatabaseApi.getInstance(mainActivity).getWorkTime(userId, client.id,shop, mainActivity.timeServer);
+        Shop shop = (Shop) bundle.getSerializable(ShopsListFragment.SHOP_TAG);
+        Client client = (Client) bundle.getSerializable(ClientsListFragment.CLIENT_TAG);
+        int userId = bundle.getInt(MainActivity.USER_ID);
+        mainActivity.timeServer = DatabaseApi.getInstance(mainActivity).getWorkTime(userId, client.id, shop, mainActivity.timeServer);
         Button photoReport = (Button) root.findViewById(R.id.buttonPhotoReport);
         photoReport.setOnClickListener( new View.OnClickListener() {
             @Override

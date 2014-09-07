@@ -1,16 +1,11 @@
 package ru.obsession.merchandising.main;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,7 +22,7 @@ import ru.obsession.merchandising.tasks_massages.MessagesFragment;
 import ru.obsession.merchandising.tasks_massages.TasksFragment;
 
 public class MainFragment extends Fragment {
-    private static final String WIFI_ENABLE_DIALOG = "wifi_Enable_Dialog";
+
     private Response.Listener<String> responseListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String s) {
@@ -76,7 +71,7 @@ public class MainFragment extends Fragment {
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setSupportProgressBarIndeterminateVisibility(true);
                 SharedPreferences preferences =
-                        mainActivity.getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+                        mainActivity.getSharedPreferences(MainActivity.PREFERENCES_NAME, Context.MODE_PRIVATE);
                 int userId = preferences.getInt(MainActivity.USER_ID, -1);
                 ServerApi.getInstance(getActivity()).testPermision(userId, responseListener, errorListener);
             }
@@ -114,35 +109,5 @@ public class MainFragment extends Fragment {
             }
         });
         return root;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.photo, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.upload_button:
-                WifiManager wifiManager = (WifiManager) getActivity().getSystemService(getActivity().WIFI_SERVICE);
-                if (wifiManager.isWifiEnabled()) {
-                    Intent intent = new Intent(getActivity(), PhotoReportingService.class);
-                    intent.putExtra(PhotoReportingService.NEED_NOTIFY, true);
-                    getActivity().startService(intent);
-                } else {
-                    dialogAlertWifiEnable();
-                }
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void dialogAlertWifiEnable() {
-        WifiEnableDialog wifiEnableDialog = new WifiEnableDialog();
-        wifiEnableDialog.show(getFragmentManager(), WIFI_ENABLE_DIALOG);
     }
 }

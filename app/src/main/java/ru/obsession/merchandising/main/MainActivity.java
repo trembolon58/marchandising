@@ -37,7 +37,7 @@ import ru.obsession.merchandising.server.ServerApi;
 public class MainActivity extends ActionBarActivity {
 
     public static final String REPORT_FRAGMENT = "photo_report_fragment";
-    public static final String PREFERENSES_NAME = "my_preferenses";
+    public static final String PREFERENCES_NAME = "my_preferences";
     public static final String DB_VERSION = "db_version";
     private static final String SERVER_TIME = "server_time";
     public static String USER_ID = "user_id";
@@ -97,19 +97,18 @@ public class MainActivity extends ActionBarActivity {
                 setSupportProgressBarIndeterminateVisibility(false);
                 JSONObject jsonObject = new JSONObject(s);
                 timeServer = jsonObject.getInt("time");
-                SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+                SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENCES_NAME, Context.MODE_PRIVATE);
                 dbVersion = preferences.getInt(DB_VERSION, -1);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putInt(SERVER_TIME, timeServer).commit();
                 int versionNew = jsonObject.getInt("db_ver");
-                editor.putInt(DB_VERSION, versionNew).commit();
-          //      if (dbVersion != versionNew) {
+                if (dbVersion != versionNew) {
                     Intent intent = new Intent(MainActivity.this, DownloadScheduleService.class);
                     startService(intent);
-                    doBindService(dbVersion);
-            /*    } else {
+                    doBindService(versionNew);
+                } else {
                     Toast.makeText(MainActivity.this, R.string.actual_version, Toast.LENGTH_LONG).show();
-                }*/
+                }
                 showDate(MainActivity.this, timeServer);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -182,7 +181,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main);
-        SharedPreferences preferences = getSharedPreferences(PREFERENSES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         userId = preferences.getInt(MainActivity.USER_ID, -1);
         dbVersion = preferences.getInt(DB_VERSION, -1);
         timeServer = preferences.getInt(SERVER_TIME, -1);
@@ -198,7 +197,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void checkUpdate() {
         setSupportProgressBarIndeterminateVisibility(true);
-        SharedPreferences preferences = getSharedPreferences(PREFERENSES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         int userId = preferences.getInt(USER_ID, -1);
         dbVersion = preferences.getInt(DB_VERSION, -1);
         ServerApi.getInstance(getApplicationContext()).testNewDb(userId, listener, errorListener);
@@ -216,7 +215,7 @@ public class MainActivity extends ActionBarActivity {
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
-        SharedPreferences preferences = getSharedPreferences(PREFERENSES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor ed = preferences.edit();
         ed.putInt(USER_ID, -1).commit();
         Fragment fragment = new AutorizationFragment();

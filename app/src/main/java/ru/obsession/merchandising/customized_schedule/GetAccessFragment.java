@@ -72,7 +72,7 @@ public class GetAccessFragment extends Fragment {
         Button sendCode = (Button) root.findViewById(R.id.buttonSendCode);
         if (savedInstanceState == null) {
             SharedPreferences preferences =
-                    getActivity().getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+                    getActivity().getSharedPreferences(MainActivity.PREFERENCES_NAME, Context.MODE_PRIVATE);
             userId = preferences.getInt(MainActivity.USER_ID, -1);
             if (userId == -1) {
                 ((MainActivity) getActivity()).logOut();

@@ -33,7 +33,6 @@ import ru.obsession.merchandising.works.Work;
 
 public class DownloadScheduleService extends Service {
 
-    private static final String name = "DounloadScheduleService";
     public static final int DOWNLOADED = 0;
     private Messenger mClient;
     static final int MSG_REGISTER_CLIENT = 1;
@@ -53,7 +52,7 @@ public class DownloadScheduleService extends Service {
                     public void run() {
                         try {
                             parseJSON(s);
-                            SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+                            SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENCES_NAME, Context.MODE_PRIVATE);
                             preferences.edit().putInt(MainActivity.DB_VERSION, dbVersion).commit();
                             sendNotification(getString(R.string.db_version_refreshed));
                             sendMessageToUI();
@@ -131,7 +130,7 @@ public class DownloadScheduleService extends Service {
             JSONObject jsonObject = array.getJSONObject(i);
             Goods goodsItem = new Goods();
             goodsItem.company = jsonObject.getString("company");
-            goodsItem.shopName = jsonObject.getString("shop_name");
+            goodsItem.shopName = jsonObject.getString("shop_name").toLowerCase();
             goodsItem.format = jsonObject.getString("format");
             goodsItem.weight = jsonObject.getString("weight");
             goodsItem.id = jsonObject.getInt("id");

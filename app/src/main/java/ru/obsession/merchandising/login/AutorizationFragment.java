@@ -56,7 +56,7 @@ public class AutorizationFragment extends Fragment {
                 public void onResponse(String s) {
                         try {
                             SharedPreferences preferences = getActivity()
-                                    .getSharedPreferences(MainActivity.PREFERENSES_NAME,getActivity().MODE_PRIVATE);
+                                    .getSharedPreferences(MainActivity.PREFERENCES_NAME,getActivity().MODE_PRIVATE);
                             try {
                                 SharedPreferences.Editor ed = preferences.edit();
                                 ed.putInt(MainActivity.USER_ID, Integer.valueOf(s));

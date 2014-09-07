@@ -76,7 +76,7 @@ public class TasksFragment extends Fragment {
         View root = inflater.inflate(R.layout.list_view_fragment, container, false);
         listView = (ListView) root.findViewById(R.id.listView);
         listView.setClickable(false);
-        SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.PREFERENCES_NAME, Context.MODE_PRIVATE);
         userId = preferences.getInt(MainActivity.USER_ID, -1);
         listView.setSelector(android.R.color.transparent);
         refresh();
@@ -103,7 +103,7 @@ public class TasksFragment extends Fragment {
         MainActivity activity = (MainActivity) getActivity();
         activity.setSupportProgressBarIndeterminateVisibility(true);
         SharedPreferences preferences =
-                activity.getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+                activity.getSharedPreferences(MainActivity.PREFERENCES_NAME, Context.MODE_PRIVATE);
         int userId = preferences.getInt(MainActivity.USER_ID, -1);
         listView.setAdapter(null);
         ServerApi.getInstance(getActivity()).getTasks(userId, listener, errorListener);

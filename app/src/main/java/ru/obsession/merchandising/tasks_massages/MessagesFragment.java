@@ -93,7 +93,7 @@ public class MessagesFragment extends Fragment {
         MainActivity activity = (MainActivity) getActivity();
         activity.setSupportProgressBarIndeterminateVisibility(true);
         SharedPreferences preferences =
-                activity.getSharedPreferences(MainActivity.PREFERENSES_NAME, Context.MODE_PRIVATE);
+                activity.getSharedPreferences(MainActivity.PREFERENCES_NAME, Context.MODE_PRIVATE);
         int userId = preferences.getInt(MainActivity.USER_ID, -1);
         listView.setAdapter(null);
         ServerApi.getInstance(getActivity()).getMessages(userId,listener, errorListener);

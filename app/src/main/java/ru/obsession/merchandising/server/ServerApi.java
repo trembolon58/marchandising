@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ServerApi {
-    public static final String LOGIN_URL = "http://wap.bolife.ru/api/";
+    public static final String LOGIN_URL = "http://m-service.su/MERCH_API/?";
     private static final String MD5_KEY = "noob_team";
     private static volatile ServerApi serverApi;
 
